@@ -1,24 +1,24 @@
-## Features of OpenBMC Test Automation
+## OpenBMC 测试自动化
 
-**Interface Feature List**
+**支持的接口**
 
 - DMTF Redfish
-- Out-of-band IPMI
-- SSH to BMC and Host OS
+- 带外 IPMI
+- SSH 到 BMC 和主机操作系统
 - [Legacy REST](https://github.com/openbmc/openbmc-test-automation/releases/tag/v4.0-stable)
 
-**Key Feature List**
+**主要功能**
 
-- Power on/off
-- Reboot Host
-- Reset BMC
-- Code update BMC and host
-- Power management
-- Fan controller
-- HTX bootme
-- XCAT execution
-- Network
-- IPMI support (generic and DCMI compliant)
+- 开机/关机
+- 重启主机
+- 复位 BMC
+- BMC 和主机固件更新
+- 电源管理
+- 风扇控制
+- HTX bootme (用于 OpenPOWER 架构的服务器硬件测试)
+- XCAT 执行(BMC批量管理工具的集成测试)
+- 网络
+- IPMI 支持（通用及 DCMI 兼容）
 - Factory reset
 - RAS (Reliability, availability and serviceability)
 - Web UI testing
