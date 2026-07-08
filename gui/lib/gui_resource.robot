@@ -15,18 +15,20 @@ ${xpath_power_shutdown}       //*[@data-test-id='serverPowerOperations-button-sh
 ${xpath_power_power_on}       //*[@data-test-id='serverPowerOperations-button-powerOn']
 ${xpath_power_reboot}         //*[@data-test-id='serverPowerOperations-button-reboot']
 ${xpath_confirm}              //button[contains(normalize-space(.),'Confirm')]
+@{host_console_location}      serial-over-lan    host-console
 
 # Default GUI browser and mode is set to "Firefox" and "headless"
 # respectively here.
 ${GUI_BROWSER}               ff
 ${GUI_MODE}                  headless
-
+# Path of virtual media image, change this before test is run
+${VIRTUAL_MEDIA_FILE_PATH}   ${EMPTY}
 
 *** Keywords ***
 
 Open Browser With URL
     [Documentation]  Open browser with specified URL and returns browser id.
-    [Arguments]  ${URL}  ${browser}=ff  ${mode}=${GUI_MODE}
+    [Arguments]  ${URL}  ${browser}=${GUI_BROWSER}  ${mode}=${GUI_MODE}
 
     # Description of argument(s):
     # URL      Openbmc GUI URL to be open
@@ -380,6 +382,26 @@ Wait And Click Element
     Wait Until Element Is Visible    ${locator}    timeout=${wait_timeout}
     Click Element    ${locator}
 
+
+Location Should Contain URL
+    [Documentation]  Verify URL contains host console path.
+    ...  Handles both new and old interfaces
+    ...  as a fallback for opensource systems using older webui.
+    [Arguments]  @{expected_urls}
+
+    # Description of argument(s):
+    # expected_urls   List of expected URL substrings or paths to look for in the
+    #                 current page URL. At least one must match. Examples:
+    #                 ["host-console", "serial-over-lan", "/#/console"].
+
+    FOR  ${url}  IN  @{expected_urls}
+        ${status}=  Run Keyword And Return Status  Location Should Contain  ${url}
+        IF  ${status}
+            RETURN
+        END
+    END
+
+    Fail    URL did not contain any of: @{expected_urls}
 
 Navigate To Required Sub Menu
     [Documentation]  Navigate to required sub menu from main menu.

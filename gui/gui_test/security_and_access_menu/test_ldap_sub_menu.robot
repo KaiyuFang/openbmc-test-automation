@@ -24,11 +24,13 @@ ${xpath_ldap_base_dn}                   //*[@data-test-id='ldap-input-baseDn']
 ${xpath_ldap_save_settings}             //*[@data-test-id='ldap-button-saveSettings']
 ${xpath_select_refresh_button}          //*[text()[contains(.,"Refresh")]]
 ${xpath_add_group_name}                 //*[@id="role-group-name"]
-${xpath_add_group_Privilege}            //*[@id="privilege"]
+${xpath_add_group_privilege}            //*[@id="privilege"]
 ${xpath_add_privilege_button}           //button[text()="Add"]
 ${xpath_delete_group_button}            //*[@title="Delete role group"]
 ${xpath_delete_button}                  //button[text()="Delete"]
-
+${xpath_role_group_checkbox}            //tbody/tr[1]//input[@type='checkbox']
+${xpath_select_all_checkbox}            //thead//input[@type='checkbox']
+${xpath_delete_selected_button}         //*[@data-test-id='table-button-deleteSelected']
 
 ${incorrect_ip}     1.2.3.4
 ${wrong_ldap_port}  135
@@ -189,6 +191,85 @@ Verify LDAP Login Fails On Wrong LDAP Port
     Should Be Equal  ${resp}  ${False}
     ...  msg=LDAP user was able to login though the wrong port in LDAP URL
 
+
+Verify Delete Button Popup State Based On Role Group Checkbox Selection
+    [Documentation]  Verify that the delete selected button state correctly reflects
+    ...  checkbox selection in the LDAP role groups table (enabled when checked, disabled/hidden when not).
+    [Tags]  Verify_Delete_Button_Popup_State_Based_On_Role_Group_Checkbox_Selection
+    [Template]  Verify Delete Button State With Checkbox Selection
+    [Setup]  Run Keywords  Login BMC And Navigate To LDAP Page
+    ...  AND  Add Role Group Via GUI  ${GROUP_NAME}  ${GROUP_PRIVILEGE}
+    [Teardown]  Run Keyword And Ignore Error  Delete LDAP Role Group  ${GROUP_NAME}
+
+    # checkbox_selected
+    ${True}
+    ${False}
+
+
+Verify Delete Icon Is Present For Role Group
+    [Documentation]  Verify delete icon is present for the role group in role groups table.
+    [Tags]  Verify_Delete_Icon_Is_Present_For_Role_Group
+    [Setup]  Run Keywords  Login BMC And Navigate To LDAP Page
+    ...  AND  Add Role Group Via GUI  ${GROUP_NAME}  ${GROUP_PRIVILEGE}
+    [Teardown]  Run Keyword And Ignore Error  Delete LDAP Role Group  ${GROUP_NAME}
+
+    # Verify that delete icon is present for the role group.
+    Wait Until Element Is Not Visible   ${xpath_page_loading_progress_bar}  timeout=30s
+    Page Should Contain Element  ${xpath_delete_group_button}
+    ...  msg=Delete icon is not present for the role group.
+
+
+Verify Display Of Role Groups Section Elements
+    [Documentation]  Verify all UI elements in the Role Groups section are displayed correctly,
+    ...  including section title, column headers, checkboxes, and action buttons.
+    [Tags]   Verify_Display_Of_Role_Groups_Section_Elements
+    [Setup]  Run Keywords  Login BMC And Navigate To LDAP Page
+    ...  AND  Add Role Group Via GUI  ${GROUP_NAME}  ${GROUP_PRIVILEGE}
+    [Teardown]  Run Keyword And Ignore Error  Delete LDAP Role Group  ${GROUP_NAME}
+
+    Wait Until Element Is Not Visible   ${xpath_page_loading_progress_bar}  timeout=30s
+
+    # Verify "Role Groups" section title is displayed.
+    Page Should Contain  Role groups
+    ...  msg=Role Groups section title is not displayed on LDAP page.
+
+    # Verify "Group name" column header is displayed.
+    Page Should Contain  Group name
+    ...  msg=Group name column header is not displayed in role groups table.
+
+    # Verify "Group privilege" column header is displayed.
+    Page Should Contain  Group privilege
+    ...  msg=Group privilege column header is not displayed in role groups table.
+
+    # Verify the select-all checkbox is present in the role groups table header.
+    Page Should Contain Element  ${xpath_select_all_checkbox}
+    ...  msg=Select all checkbox is not present in role groups table header.
+
+    # Verify "Add role group" button is displayed.
+    Page Should Contain Element  ${xpath_add_role_group_button}
+    ...  msg=Add role group button is not displayed.
+
+    # Verify delete icon is present for the role group.
+    Page Should Contain Element  ${xpath_delete_group_button}
+    ...  msg=Delete icon is not present for the role group.
+
+
+Verify All Privileges Visible In Group Privilege Options
+    [Documentation]  Verify privilege dropdown contains mandatory options (Administrator and ReadOnly)
+    ...  and optionally Operator and No Access when adding an LDAP role group.
+    ...  Reports if optional privileges are not present for user awareness.
+    [Tags]  Verify_All_Privileges_Visible_In_Group_Privilege_Options
+    [Setup]  Login BMC And Navigate To LDAP Page
+    [Teardown]  Reload Page
+
+    Wait Until Element Is Not Visible   ${xpath_page_loading_progress_bar}  timeout=30s
+    Wait Until Element Is Enabled  ${xpath_add_role_group_button}  timeout=30s
+    Click Element  ${xpath_add_role_group_button}
+    Wait Until Element Is Visible  ${xpath_add_group_privilege}  timeout=10s
+
+    Validate Group Privilege Options
+
+
 *** Keywords ***
 
 Suite Setup Execution
@@ -296,7 +377,7 @@ Update LDAP Configuration With LDAP User Role And Group
     Create LDAP Configuration
     Click Element  ${xpath_add_role_group_button}
     Input Text  ${xpath_add_group_name}  ${group_name}
-    Select From List By Value  ${xpath_add_group_Privilege}  ${group_privilege}
+    Select From List By Value  ${xpath_add_group_privilege}  ${group_privilege}
     Click Element  ${xpath_add_privilege_button}
 
     # Verify group name after adding.
@@ -340,6 +421,31 @@ Disable LDAP Configuration
     Wait Until Page Contains  Successfully saved Open LDAP settings
     Click Element  ${xpath_refresh_button}
     Wait Until Page Contains Element  ${xpath_ldap_heading}
+
+
+Add Role Group Via GUI
+    [Documentation]  Add a new LDAP role group via the GUI interface.
+    ...              This keyword navigates to the role group section, fills in the group name
+    ...              and privilege level, then submits the form. Waits for confirmation that
+    ...              the group was added successfully.
+    [Arguments]  ${group_name}  ${group_privilege}
+
+    # Description of argument(s):
+    # group_name       The group name of LDAP user.
+    # group_privilege  The group privilege for LDAP user
+    #                  (e.g. "Administrator", "Operator" or "ReadOnly").
+
+    Wait Until Element Is Enabled  ${xpath_add_role_group_button}  timeout=30s
+    Click Element  ${xpath_add_role_group_button}
+    Wait Until Element Is Visible  ${xpath_add_group_name}  timeout=10s
+    Input Text  ${xpath_add_group_name}  ${group_name}
+    Wait Until Element Is Visible  ${xpath_add_group_privilege}  timeout=10s
+    Select From List By Value  ${xpath_add_group_privilege}  ${group_privilege}
+    Click Element  ${xpath_add_privilege_button}
+    Wait Until Page Contains  ${group_name}  timeout=120s
+
+    # Verify privilege level was set correctly.
+    Wait Until Page Contains  ${group_privilege}  timeout=10s
 
 
 Login BMC And Navigate To LDAP Page
@@ -386,3 +492,77 @@ Update LDAP User Role And Read Network Configuration Via GUI
 
     ${mac_address}=  Redfish.Get Attribute  ${REDFISH_NW_ETH0_URI}  MACAddress
     Textfield Value Should Be  ${xpath_mac_address_input}  ${mac_address}
+
+
+Verify Delete Button State With Checkbox Selection
+    [Documentation]  Verify delete button state based on checkbox selection.
+    [Arguments]  ${checkbox_selected}
+
+    # Description of argument(s):
+    # checkbox_selected        Boolean indicating whether to select the checkbox (True/False).
+
+    Wait Until Element Is Not Visible   ${xpath_page_loading_progress_bar}  timeout=30s
+
+    IF  ${checkbox_selected}
+        Click Element At Coordinates  ${xpath_role_group_checkbox}  0  0
+        Wait Until Element Is Visible  ${xpath_delete_selected_button}  timeout=10s
+        Wait Until Keyword Succeeds  5s  1s  Element Should Be Enabled  ${xpath_delete_selected_button}
+    ELSE
+        # Ensure checkbox is not selected.
+        ${is_selected}=  Run Keyword And Return Status
+        ...  Checkbox Should Be Selected  ${xpath_role_group_checkbox}
+        IF  ${is_selected}
+            Click Element At Coordinates  ${xpath_role_group_checkbox}  0  0
+            Wait Until Element Is Not Visible  ${xpath_delete_selected_button}  timeout=10s
+        END
+        # Verify delete button is not visible when no checkbox is selected.
+        Element Should Not Be Visible  ${xpath_delete_selected_button}
+        ...  msg=Delete button should not be visible when no checkbox is selected
+
+
+Validate Group Privilege Options
+    [Documentation]  Validate privilege dropdown options for LDAP role groups.
+    ...  Verifies mandatory privileges (Administrator, ReadOnly) are present.
+    ...  Reports if optional privileges (Operator, No Access) are missing.
+    ...  Fails if any unexpected privileges are found.
+
+    # Get all available privilege options from the dropdown.
+    ${privilege_options}=  Get List Items  ${xpath_add_group_privilege}
+
+    # Filter out placeholder values (empty strings or selection prompts).
+    VAR  @{filtered_options}
+    FOR  ${option}  IN  @{privilege_options}
+        IF  '${option}' != '' and '${option}' != 'Select an option'
+            Append To List  ${filtered_options}  ${option}
+        END
+    END
+
+    # Verify mandatory privilege options (Administrator and ReadOnly) are present.
+    List Should Contain Value  ${filtered_options}  Administrator
+    ...  msg=Administrator privilege option is not available in the dropdown (mandatory).
+    List Should Contain Value  ${filtered_options}  ReadOnly
+    ...  msg=ReadOnly privilege option is not available in the dropdown (mandatory).
+
+    # Check for optional privileges (Operator and No Access) and report if not present.
+    ${has_operator}=  Run Keyword And Return Status
+    ...  List Should Contain Value  ${filtered_options}  Operator
+    ${has_no_access}=  Run Keyword And Return Status
+    ...  List Should Contain Value  ${filtered_options}  No Access
+
+    # Report if optional privileges are not present (informational only, does not fail test).
+    IF  not ${has_operator}
+        Log  INFO: Optional privilege 'Operator' is not present in the dropdown.  WARN
+    END
+    IF  not ${has_no_access}
+        Log  INFO: Optional privilege 'No Access' is not present in the dropdown.  WARN
+    END
+
+    # Verify no unexpected privileges exist (only Administrator, ReadOnly, Operator, No Access are allowed).
+    VAR  @{allowed_privileges}  Administrator  ReadOnly  Operator  No Access
+    FOR  ${option}  IN  @{filtered_options}
+        ${is_allowed}=  Run Keyword And Return Status
+        ...  List Should Contain Value  ${allowed_privileges}  ${option}
+        IF  not ${is_allowed}
+            Fail  Unexpected privilege '${option}' found in dropdown. Only Administrator, ReadOnly, Operator, and No Access are allowed.
+        END
+    END
