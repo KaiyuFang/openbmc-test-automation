@@ -23,7 +23,7 @@
 - RAS (可靠性、可用性和可维护性)
 - Web UI 测试
 - 安全启动
-- SNMP (简单网络管理协议)
+- SNMP（简单网络管理协议）
 - 基于 Rsyslog 的远程日志记录
 - LDAP (轻量级目录访问协议)
 - 证书
@@ -89,7 +89,7 @@
   Legacy REST 测试中常用 curl 命令的快速参考
 - [REDFISH-cheatsheet.md](https://github.com/openbmc/docs/blob/master/REDFISH-cheatsheet.md)：
   Redfish 测试中常用 curl 命令的快速参考
-- [README.md](https://github.com/openbmc/webui-vue/blob/master/README.md):：
+- [README.md](https://github.com/openbmc/webui-vue/blob/master/README.md)：
   Web UI 设置参考
 - [基于 mTLS 的 Redfish 请求](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/redfish_request_via_mTLS.md)：
   基于 mTLS 发起 Redfish 请求的参考文档
@@ -165,7 +165,7 @@ openbmc-test-automation 根目录下包含多个子目录，分别存放测试�
 
 ## Redfish 测试目录结构
 
-OpenBMC 正逐步采用 DMTF Redfish，这是一项开放的行业标准规范与Schema, 
+OpenBMC 正逐步采用 DMTF Redfish，这是一项开放的行业标准规范与 Schema 定义, 
 旨在满足最终用户对可扩展平台硬件实现简洁、现代化且安全管理的需求。
 
 `redfish/`： 包含 OpenBMC 上支持的 DMTF Redfish 相关功能测试用例
@@ -179,7 +179,7 @@ OpenBMC 正逐步采用 DMTF Redfish，这是一项开放的行业标准规范�
 运行 openbmc-automation 前，需先安装所需的 Python 依赖包，
 以便通过 tox（版本需不低于 2.3.1）或 Robot CLI 命令来执行测试。
 
-**Robot 命令行**
+**Robot CLI**
 
 - 执行 redfish/ 和 ipmi/ 下的所有测试套件：
 
