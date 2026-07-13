@@ -117,102 +117,86 @@ OpenBMC 测试框架已验证可运行于以下平台：
 - POWER
 - 运行 OpenBMC 固件栈的 x86 系统
 
-## Testing Setup Steps
+## 测试环境准备步骤
 
-To verify the installation setup is completed and ready to execute.
+用于验证环境准备是否已完成并可执行测试
 
-- Download the openbmc-test-automation repository:
+-下载 openbmc-test-automation 仓库:
 
   ```
   $ git clone https://github.com/openbmc/openbmc-test-automation
   $ cd openbmc-test-automation
   ```
 
-- Execute basic setup test run:
+- 运行基础环境验证测试:
 
   ```
   $ robot -v OPENBMC_HOST:xx.xx.xx.xx templates/test_openbmc_setup.robot
   ```
 
-  where xx.xx.xx.xx is the BMC hostname or IP.
+  其中 xx.xx.xx.xx 为 BMC 的主机名或 IP 地址
 
-## Test Layout
+## 测试目录结构
 
-There are several sub-directories within the openbmc-test-automation base which
-contain test suites, tools, templates, etc. These sub-directories are classified
-as follows:
+openbmc-test-automation 根目录下包含多个子目录，分别存放测试套件、工具、模板等。这些子目录的分类如下:
 
-`docs/`: Contains the documentation related to OpenBMC.
+`docs/`: 包含与 OpenBMC 相关的文档
 
-`redfish/`: Contains the general test cases for OpenBMC stack functional
-verification.
+`redfish/`: 包含 OpenBMC 功能验证的通用测试用例
 
-`systest/`: Contains test cases for HTX bootme testing.
+`systest/`: 包含 HTX bootme 测试用例
 
-`xcat/`: Contains test cases for XCAT automation.
+`xcat/`: 包含 XCAT 自动化测试用例
 
-`gui/test/`: Contains test cases for testing web-based interface built on
-AngularJS.
+`gui/test/`: 包含基于 AngularJS 的 Web 界面测试用例
 
-`gui/gui_test/`: Contains test cases for testing web-based user interface built
-on Vue.js.
+`gui/gui_test/`: 包含基于 Vue.js 的 Web 用户界面测试用例
 
-`pldm/`: Contains test cases for platform management subsystem (base, bios, fru,
-platform, OEM).
+`pldm/`: 包含平台管理子系统的测试用例（base、bios、fru、platform、OEM）
 
-`snmp/`: Contains test cases for SNMP (Simple Network Management Protocol)
-configuration testing.
+`snmp/`: 包含 SNMP（简单网络管理协议）配置测试用例
 
-`openpower/`: Contains test cases for an OpenPOWER based system.
+`openpower/`: 包含基于 OpenPOWER 系统的测试用例
 
-`tools/`: Contains various tools.
+`tools/`: 包含各类工具
 
-`templates/`: Contains sample code examples and setup testing.
+`templates/`: 包含示例代码和环境搭建测试
 
-`test_list/`: Contains the argument files used for skipping test cases (e.g
-"skip_test", "skip_test_extended", etc.) or grouping them (e.g "HW_CI",
-"CT_basic_run", etc.).
+`test_list/`: 包含用于跳过测试用例（如 skip_test、skip_test_extended 等）或进行分组（如 HW_CI、CT_basic_run 等）的参数文件
 
-## Redfish Test Layout
+## Redfish 测试目录结构
 
-OpenBMC is moving steadily towards DTMF Redfish, which is an open industry
-standard specification and schema that meets the expectations of end users for
-simple, modern and secure management of scalable platform hardware.
+OpenBMC 正稳步向 DMTF Redfish 演进，这是一项开放的行业标准规范与数据模型，
+旨在满足最终用户对可扩展平台硬件实现简洁、现代化且安全管理的需求。
 
-`redfish/`: Contains test cases for DMTF Redfish-related feature supported on
-OpenBMC.
+`redfish/`: 包含 OpenBMC 上支持的 DMTF Redfish 相关功能测试用例
 
-`redfish/extended/`: Contains test cases for combined DMTF Redfish-related
-feature supported on OpenBMC. Some of the test will be deprecated.
+`redfish/extended/`: 包含组合的 DMTF Redfish 相关功能测试用例。部分测试用例后续将被弃用
 
-Note: Work in progress test development parameter
-`-v REDFISH_SUPPORT_TRANS_STATE:1` to force the test suites to execute in
-redfish mode only.
+注意：开发中的测试参数 -v REDFISH_SUPPORT_TRANS_STATE:1 可用于强制测试套件仅以 Redfish 模式执行。
 
-## Quickstart
+## 快速入门
 
-To run openbmc-automation first you need to install the prerequisite Python
-packages which will help to invoke tests through tox (Note that tox version
-2.3.1 or greater is required) or via Robot CLI command.
+运行 openbmc-automation 前，需先安装所需的 Python 依赖包，
+以便通过 tox（版本需不低于 2.3.1）或 Robot CLI 命令来执行测试。
 
-**Robot Command Line**
+**Robot 命令行**
 
-- Execute all test suites for `redfish/` and `ipmi/`:
+- 执行 redfish/ 和 ipmi/ 下的所有测试套件：:
 
   ```
   $ robot -v OPENBMC_HOST:xx.xx.xx.xx  redfish  ipmi
   ```
 
-- Execute a test suite:
+- 执行单个测试套件:
 
   ```
   $ robot -v OPENBMC_HOST:xx.xx.xx.xx redfish/extended/test_basic_ci.robot
   ```
 
-- Initialize the following test variables which will be used during test
-  execution:
+- 初始化测试执行期间使用的变量:
 
-  User can forward declare as environment variables:
+  用户可通过环境变量预声明:
 
   ```
   $ export OPENBMC_HOST=<openbmc machine IP address/hostname>
@@ -223,7 +207,7 @@ packages which will help to invoke tests through tox (Note that tox version
 
   or
 
-  User can input as robot variables as part of the CLI command:
+  或者，用户也可在 CLI 命令中以 robot 变量的形式传入:
 
   ```
   -v OPENBMC_HOST:<openbmc machine IP address/hostname>
@@ -231,115 +215,111 @@ packages which will help to invoke tests through tox (Note that tox version
   -v OPENBMC_PASSWORD:<openbmc password>
   ```
 
-- Testing in qemu:
+- 在 qemu 中进行测试:
 
-  Set extra environment variables:
+  设置额外的环境变量:
 
   ```
   $ export SSH_PORT=<ssh port number>
   $ export HTTPS_PORT=<https port number>
   ```
 
-  Run the QEMU CI test suite:
+  运行 QEMU CI 测试套件:
 
   ```
   $ OPENBMC_HOST=xx.xx.xx.xx SSH_PORT=<port number> HTTPS_PORT=<port number> robot -A test_lists/QEMU_CI  redfish/ ipmi/
   ```
 
-- Run tests:
+- 运行测试:
 
-- How to run an individual test:
+- 如何运行单个测试:
 
   ```
   $ OPENBMC_HOST=xx.xx.xx.xx tox -e default -- --include Test_SSH_And_IPMI_Connections redfish/extended/test_basic_ci.robot
   ```
 
-- How to run CI and CT bucket test:
+- 如何运行 CI 和 CT 分组测试:
 
-  Default CI test bucket list:
+ 默认CI测试分组列表:
 
   ```
   $ OPENBMC_HOST=xx.xx.xx.xx tox -e default -- --argumentfile test_lists/HW_CI  redfish/  ipmi/
   ```
 
-  Default CI smoke test bucket list:
+  默认 CI 冒烟测试分组列表:
 
   ```
   $ OPENBMC_HOST=xx.xx.xx.xx tox -e default -- --argumentfile test_lists/CT_basic_run  redfish/  ipmi/
   ```
 
-- Exclude test list for supported systems:
+- 所支持机型的测试排除列表:
 
   ```
   Witherspoon:  test_lists/skip_test_witherspoon
   ```
 
-  Using the exclude lists (example for Witherspoon)
+  使用排除列表（以 Witherspoon 为例）
 
   ```
   $ robot -v OPENBMC_HOST:xx.xx.xx.xx -A test_lists/skip_test_witherspoon  redfish/ ipmi/
   ```
 
-- Run IPMI tests via robot CLI interface:
+- 通过 Robot CLI 接口运行 IPMI 测试:
 
-  Running only out-of-band IPMI tests:
+  仅运行带外 IPMI 测试:
 
   ```
   $ robot -v IPMI_COMMAND:External -v OPENBMC_HOST:xx.xx.xx.xx --argumentfile test_lists/witherspoon/skip_inband_ipmi  ipmi/
   ```
 
-  Running only inband IPMI tests:
+  仅运行带内 IPMI 测试:
 
   ```
   $ robot -v IPMI_COMMAND:Inband -v OPENBMC_HOST:xx.xx.xx.xx -v OS_HOST:xx.xx.xx.xx -v OS_USERNAME:xxxx -v OS_PASSWORD:xxxx --argumentfile test_lists/witherspoon/skip_oob_ipmi  ipmi/
   ```
 
-- Run GUI tests via robot CLI interface:
+- 通过 Robot CLI 接口运行 GUI 测试:
 
-  By default, GUI runs with Firefox browser and headless mode. Example with
-  Chrome browser and header mode:
+  默认情况下，GUI 使用 Firefox 浏览器并以 headless 模式运行。
+  使用 Chrome 浏览器并以 header 模式运行的示例如下：
 
   ```
   $ robot -v OPENBMC_HOST:xx.xx.xx.xx -v GUI_BROWSER:gc -v GUI_MODE:header gui/test/
   ```
 
-  Run GUI default CI test bucket:
+  运行 GUI 默认 CI 测试组:
 
   ```
   $ robot -v OPENBMC_HOST:xx.xx.xx.xx --argumentfile test_lists/BMC_WEB_CI gui/test/
   ```
 
-- Run LDAP tests via robot CLI interface:
+- 通过 Robot CLI 接口运行 LDAP 测试：
 
-  Before using LDAP test functions, be sure appropriate LDAP user(s) and
-  group(s) have been created on your LDAP server. Note: There are multiple ways
-  to create LDAP users / groups and all depend on your LDAP server. One common
-  way for openldap is ldapadd / ldapmodify refer
-  https://linux.die.net/man/1/ldapadd For ldapsearch, refer to
-  "https://linux.die.net/man/1/ldapsearch". Microsoft ADS: refer to
+  使用 LDAP 测试功能前，请确保已在 LDAP 服务器上创建了相应的 LDAP 用户及组
+  注意：LDAP 用户/组的创建方式多样，具体取决于 LDAP 服务器类型。OpenLDAP 常用方式为 ldapadd / ldapmodify，参考：
+  https://linux.die.net/man/1/ldapadd ；ldapsearch 参考：https://linux.die.net/man/1/ldapsearch 。
+  Microsoft ADS 参考：
   https://searchwindowsserver.techtarget.com/definition/Microsoft-Active-Directory-Domain-Services-AD-DS
 
-  The format to invoke LDAP test is as follows:
+  调用 LDAP 测试的格式如下：
 
   ```
   $ cd redfish/account_service/
   $ robot -v OPENBMC_HOST:xx.xx.xx.xx -v LDAP_SERVER_URI:<ldap(s)//LDAP Hostname / IP> -v LDAP_BIND_DN:<LDAP Bind DN> -v LDAP_BASE_DN:<LDAP Base DN> -v LDAP_BIND_DN_PASSWORD:<LDAP Bind password> -v LDAP_SEARCH_SCOPE:<LDAP search scope> -v LDAP_SERVER_TYPE:<LDAP server type> -v LDAP_USER:<LDAP user-id> -v LDAP_USER_PASSWORD:<LDAP PASSWORD> -v GROUP_NAME:<Group Name> -v GROUP_PRIVILEGE:<Privilege>  ./test_ldap_configuration.robot
   ```
 
-- Host CPU architecture
+- 主机CPU架构
 
-  By default openbmc-test-automation framework assumes that host CPU is based on
-  the POWER architecture. If your host CPU is x86 add
-  `-v PLATFORM_ARCH_TYPE:x86` variable setting to your CLI commands or set an
-  environment variable:
+  默认情况下，openbmc-test-automation 框架假定主机 CPU 基于 POWER 架构。若主机 CPU 为 x86，
+  请在 CLI 命令中添加 -v PLATFORM_ARCH_TYPE:x86 变量设置，或设置环境变量：
 
   ```
   $ export PLATFORM_ARCH_TYPE=x86
   ```
 
-**Jenkins jobs tox commands**
+**Jenkins 任务 tox 命令**
 
-- HW CI tox command:
+- HW CI tox 命令：
 
   ```
   $ OPENBMC_HOST=xx.xx.xx.xx tox -e default -- --argumentfile test_lists/HW_CI  redfish/  ipmi/
