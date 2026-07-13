@@ -4,7 +4,7 @@
 
 - DMTF Redfish
 - 带外 IPMI
-- SSH 到 BMC 和主机操作系统
+- SSH 登录到 BMC 和主机操作系统
 - [Legacy REST](https://github.com/openbmc/openbmc-test-automation/releases/tag/v4.0-stable)
 
 **主要功能**
@@ -15,8 +15,8 @@
 - BMC 和主机固件更新
 - 电源管理
 - 风扇控制
-- HTX bootme (用于 OpenPOWER 架构的服务器硬件测试)
-- XCAT 执行(BMC批量管理工具的集成测试)
+- HTX bootme
+- XCAT 执行
 - 网络
 - IPMI 支持（通用及 DCMI 兼容）
 - 恢复出厂设置
@@ -24,19 +24,19 @@
 - Web UI 测试
 - 安全启动
 - SNMP (简单网络管理协议)
-- 基于Rsyslog的远程日志记录
+- 基于 Rsyslog 的远程日志记录
 - LDAP (轻量级目录访问协议)
 - 证书
 - 本地用户管理（Redfish / IPMI）
 - 日期和时间
 - 事件日志
-- 基于 pldmtool 的 PLDM（平台级数据模型）
+- PLDM（平台级数据模型，通过 pldmtool）
 
 **调试支持**
 
 - SOL 收集
 - FFDC 收集
-- 主机注错
+- 主机错误注入
 
 ## 安装设置指南
 
@@ -46,7 +46,7 @@
 
 若使用 Python 3.x，请使用对应的 pip3 命令安装。注意：旧版的Python 2.x 已不再维护
 
-安装所需依赖:
+安装所需依赖：
 
 ```
     $ pip install -r requirements.txt
@@ -70,7 +70,7 @@
     $ pip install -U tox
 ```
 
-安装 expect (以Ubuntu为例):
+安装 expect (以 Ubuntu 为例):
 
 ```
     $ sudo apt-get install expect
@@ -93,7 +93,7 @@
 - [README.md](https://github.com/openbmc/webui-vue/blob/master/README.md): Web
   Web UI 设置参考
 - [基于 mTLS 的 Redfish 请求](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/redfish_request_via_mTLS.md):
-  基于mTLS发起 Redfish 请求的参考文档
+  基于 mTLS 发起 Redfish 请求的参考文档
 - [公司 CLA 与个人 CLA](https://github.com/openbmc/docs/blob/master/CONTRIBUTING.md#submitting-changes-via-gerrit-server):
   通过 Gerrit 服务器提交变更的相关说明
 
@@ -103,8 +103,8 @@
   OpenBMC 测试架构参考
 - [工具](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/openbmc_test_tools.md):
   辅助工具参考信息
-- [代码更新](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/code_update.md):
- 当前支持的 BMC 与 PNOR(Processor NOR Flash) 更新
+- [固件更新](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/code_update.md):
+ 当前支持的 BMC 与 PNOR 更新
 - [证书生成](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/certificate_generate.md):
   创建及安装 CA 签名证书的步骤
 - [启动测试](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/boot_test.md):
@@ -166,7 +166,7 @@ openbmc-test-automation 根目录下包含多个子目录，分别存放测试�
 
 ## Redfish 测试目录结构
 
-OpenBMC 正稳步向 DMTF Redfish 演进，这是一项开放的行业标准规范与数据模型，
+OpenBMC 正稳步向 DMTF Redfish 演进，这是一项开放的行业标准规范与Schema, 
 旨在满足最终用户对可扩展平台硬件实现简洁、现代化且安全管理的需求。
 
 `redfish/`: 包含 OpenBMC 上支持的 DMTF Redfish 相关功能测试用例
@@ -207,7 +207,7 @@ OpenBMC 正稳步向 DMTF Redfish 演进，这是一项开放的行业标准规�
 
   or
 
-  或者，用户也可在 CLI 命令中以 robot 变量的形式传入:
+  或者，用户也可在 CLI 命令中通过 robot 变量传入:
 
   ```
   -v OPENBMC_HOST:<openbmc machine IP address/hostname>
@@ -252,7 +252,7 @@ OpenBMC 正稳步向 DMTF Redfish 演进，这是一项开放的行业标准规�
   $ OPENBMC_HOST=xx.xx.xx.xx tox -e default -- --argumentfile test_lists/CT_basic_run  redfish/  ipmi/
   ```
 
-- 所支持机型的测试排除列表:
+- 所支持机型的测试排除列表：
 
   ```
   Witherspoon:  test_lists/skip_test_witherspoon
@@ -280,8 +280,7 @@ OpenBMC 正稳步向 DMTF Redfish 演进，这是一项开放的行业标准规�
 
 - 通过 Robot CLI 接口运行 GUI 测试:
 
-  默认情况下，GUI 使用 Firefox 浏览器并以 headless 模式运行。
-  使用 Chrome 浏览器并以 header 模式运行的示例如下：
+  默认情况下，GUI 使用 Firefox 浏览器并以无头模式运行。使用 Chrome 浏览器并以 header 模式运行的示例如下：
 
   ```
   $ robot -v OPENBMC_HOST:xx.xx.xx.xx -v GUI_BROWSER:gc -v GUI_MODE:header gui/test/
@@ -308,9 +307,9 @@ OpenBMC 正稳步向 DMTF Redfish 演进，这是一项开放的行业标准规�
   $ robot -v OPENBMC_HOST:xx.xx.xx.xx -v LDAP_SERVER_URI:<ldap(s)//LDAP Hostname / IP> -v LDAP_BIND_DN:<LDAP Bind DN> -v LDAP_BASE_DN:<LDAP Base DN> -v LDAP_BIND_DN_PASSWORD:<LDAP Bind password> -v LDAP_SEARCH_SCOPE:<LDAP search scope> -v LDAP_SERVER_TYPE:<LDAP server type> -v LDAP_USER:<LDAP user-id> -v LDAP_USER_PASSWORD:<LDAP PASSWORD> -v GROUP_NAME:<Group Name> -v GROUP_PRIVILEGE:<Privilege>  ./test_ldap_configuration.robot
   ```
 
-- 主机CPU架构
+- 主机 CPU 架构
 
-  默认情况下，openbmc-test-automation 框架假定主机 CPU 基于 POWER 架构。若主机 CPU 为 x86，
+  openbmc-test-automation 框架默认主机 CPU 为 POWER 架构。若主机 CPU 为 x86，
   请在 CLI 命令中添加 -v PLATFORM_ARCH_TYPE:x86 变量设置，或设置环境变量：
 
   ```
