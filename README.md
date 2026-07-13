@@ -19,107 +19,103 @@
 - XCAT 执行(BMC批量管理工具的集成测试)
 - 网络
 - IPMI 支持（通用及 DCMI 兼容）
-- Factory reset
-- RAS (Reliability, availability and serviceability)
-- Web UI testing
-- Secure boot
-- SNMP (Simple Network Management Protocol)
-- Remote Logging via Rsyslog
-- LDAP (Lightweight Directory Access Protocol)
-- Certificate
-- Local User Management(Redfish/IPMI)
-- DateTime
-- Event Logging
-- PLDM (Platform Level Data Model) via pldmtool
+- 恢复出厂设置
+- RAS (可靠性、可用性和可维护性)
+- Web UI 测试
+- 安全启动
+- SNMP (简单网络管理协议)
+- 基于Rsyslog的远程日志记录
+- LDAP (轻量级目录访问协议)
+- 证书
+- 本地用户管理（Redfish / IPMI）
+- 日期和时间
+- 事件日志
+- 基于 pldmtool 的 PLDM（平台级数据模型）
 
-**Debugging Supported List**
+**调试支持**
 
-- SOL collection
-- FFDC collection
-- Error injection from host
+- SOL 收集
+- FFDC 收集
+- 主机注错
 
-## Installation Setup Guide
+## 安装设置指南
 
-- [Robot Framework Install Instruction](https://github.com/robotframework/robotframework/blob/master/INSTALL.rst)
+- [Robot Framework 安装说明](https://github.com/robotframework/robotframework/blob/master/INSTALL.rst)
 
-- Miscellaneous Packages required to be installed for OpenBmc Automation.
-  Install the packages and it's dependencies via `pip`
+- 通过 pip 安装 OpenBMC 测试自动化所需的软件包及其依赖项
 
-If using Python 3.x, use the corresponding `pip3` to install packages. Note:
-Older Python 2.x is not actively supported.
+若使用 Python 3.x，请使用对应的 pip3 命令安装。注意：旧版的Python 2.x 已不再维护
 
-Installing requirement dependencies:
+安装所需依赖:
 
 ```
     $ pip install -r requirements.txt
 ```
 
-Optional packages but required for `redfish/dmtf_tools/`
+可选软件包，但使用 redfish/dmtf_tools/ 时必须安装
 
 ```
     $ pip install -r requirements_optional.txt
 ```
 
-you'll find this file once your clone openbmc-test-automation repository.
+克隆 openbmc-test-automation 仓库后即可找到该文件
 
-For Web UI ( GUI ) Testing setup, please the follow instructions mentioned in
-the OpenBMC GUI Test Setup Guide. Note: GUI test cases under `gui/` will not
-work without the above setup completed in your environment.
-[OpenBMC GUI Test Setup Guide](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/gui_setup_reference.md)
+关于 Web UI（图形界面）测试环境搭建，请遵循《OpenBMC GUI 测试设置指南》中的操作说明
+注意：若未在环境中完成上述设置，gui/ 目录下的 GUI 测试用例将无法运行
+[OpenBMC GUI 测试设置指南](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/gui_setup_reference.md)
 
-Installing tox:
+安装 tox:
 
 ```
     $ pip install -U tox
 ```
 
-Installing expect (Ubuntu example):
+安装 expect (以Ubuntu为例):
 
 ```
     $ sudo apt-get install expect
 ```
 
-## OpenBMC Test Development
+## OpenBMC 测试开发
 
-These documents contain details on developing OpenBMC test code and debugging.
+下列文档包含 OpenBMC 测试代码开发与调试的详细信息
 
-- [MAINTAINERS](OWNERS): OpenBMC test code maintainers information.
-- [CONTRIBUTING.md](CONTRIBUTING.md): Coding guidelines.
-- [Code Check Tools](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/code_standards_check.md):
-  To check common code misspellings, syntax and standard checks.
-- [Redfish Coding Guidelines](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/redfish_coding_guidelines.md):
-  Refer for Redfish coding guidelines.
+- [MAINTAINERS](OWNERS): OpenBMC 测试代码维护者信息
+- [CONTRIBUTING.md](CONTRIBUTING.md): 编码规范
+- [代码检查工具](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/code_standards_check.md):
+  用于检查常见拼写错误、语法及标准规范检查
+- [Redfish 编码规范](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/redfish_coding_guidelines.md):
+  Redfish 编码规范参考
 - [REST-cheatsheet.md](https://github.com/openbmc/docs/blob/master/REST-cheatsheet.md):
-  Quick reference for some common curl commands required for legacy REST
-  testing.
+  Legacy REST 测试中常用 curl 命令的快速参考
 - [REDFISH-cheatsheet.md](https://github.com/openbmc/docs/blob/master/REDFISH-cheatsheet.md):
-  Quick reference for some common curl commands required for redfish testing.
+  Redfish 测试中常用 curl 命令的快速参考
 - [README.md](https://github.com/openbmc/webui-vue/blob/master/README.md): Web
-  UI setup reference.
-- [Redfish Request Via mTLS](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/redfish_request_via_mTLS.md):
-  Reference for Redfish Request Via mTLS .
-- [Corporate CLA and Individual CLA](https://github.com/openbmc/docs/blob/master/CONTRIBUTING.md#submitting-changes-via-gerrit-server):
-  Submitting changes via Gerrit server
+  Web UI 设置参考
+- [基于 mTLS 的 Redfish 请求](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/redfish_request_via_mTLS.md):
+  基于mTLS发起 Redfish 请求的参考文档
+- [公司 CLA 与个人 CLA](https://github.com/openbmc/docs/blob/master/CONTRIBUTING.md#submitting-changes-via-gerrit-server):
+  通过 Gerrit 服务器提交变更的相关说明
 
-## OpenBMC Test Documentation
+## OpenBMC 测试文档
 
-- [OpenBMC Test Architecture](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/openbmc_test_architecture.md):
-  Reference for OpenBMC Test Architecture.
-- [Tools](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/openbmc_test_tools.md):
-  Reference information for helper tools.
-- [Code Update](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/code_update.md):
-  Currently supported BMC and PNOR update.
-- [Certificate Generate](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/certificate_generate.md):
-  Steps to create and install CA signed certificate.
-- [Boot Test](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/boot_test.md):
-  Boot test for OpenBMC.
+- [OpenBMC 测试架构](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/openbmc_test_architecture.md):
+  OpenBMC 测试架构参考
+- [工具](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/openbmc_test_tools.md):
+  辅助工具参考信息
+- [代码更新](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/code_update.md):
+ 当前支持的 BMC 与 PNOR(Processor NOR Flash) 更新
+- [证书生成](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/certificate_generate.md):
+  创建及安装 CA 签名证书的步骤
+- [启动测试](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/boot_test.md):
+  OpenBMC启动测试
 
-## Supported Systems Architecture
+## 支持的系统架构
 
-OpenBMC test infrastructure is proven capable of running on:
+OpenBMC 测试框架已验证可运行于以下平台：
 
 - POWER
-- x86 systems running OpenBMC firmware stack.
+- 运行 OpenBMC 固件栈的 x86 系统
 
 ## Testing Setup Steps
 
