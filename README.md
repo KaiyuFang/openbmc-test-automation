@@ -179,7 +179,7 @@ OpenBMC 正逐步采用 DMTF Redfish，这是一项开放的行业标准规范�
 运行 openbmc-automation 前，需先安装所需的 Python 依赖包，
 以便通过 tox（版本需不低于 2.3.1）或 Robot CLI 命令来执行测试。
 
-**Robot CLI**
+**Robot 命令行**
 
 - 执行 redfish/ 和 ipmi/ 下的所有测试套件：
 
