@@ -20,7 +20,7 @@
 - 网络
 - IPMI 支持（通用及 DCMI 兼容）
 - 恢复出厂设置
-- RAS (可靠性、可用性和可维护性)
+- RAS（可靠性、可用性和可维护性）
 - Web UI 测试
 - 安全启动
 - SNMP（简单网络管理协议）
@@ -120,7 +120,7 @@ OpenBMC 测试框架已验证可运行于以下平台：
 
 用于验证环境准备是否已完成并可执行测试
 
--下载 openbmc-test-automation 仓库：
+- 下载 openbmc-test-automation 仓库：
 
   ```
   $ git clone https://github.com/openbmc/openbmc-test-automation
@@ -165,12 +165,12 @@ openbmc-test-automation 根目录下包含多个子目录，分别存放测试�
 
 ## Redfish 测试目录结构
 
-OpenBMC 正逐步采用 DMTF Redfish，这是一项开放的行业标准规范与 Schema 定义, 
+OpenBMC 正逐步采用 DMTF Redfish，这是一项开放的行业标准规范与 Schema 定义，
 旨在满足最终用户对可扩展平台硬件实现简洁、现代化且安全管理的需求。
 
 `redfish/`： 包含 OpenBMC 上支持的 DMTF Redfish 相关功能测试用例
 
-`redfish/extended/`： 包含组合的 DMTF Redfish 相关功能测试用例。部分测试用例后续将被弃用
+`redfish/extended/`： 包含组合型 DMTF Redfish 相关功能测试用例。部分测试用例后续将被弃用
 
 注意：开发中的测试参数 -v REDFISH_SUPPORT_TRANS_STATE:1 可用于强制测试套件仅以 Redfish 模式执行。
 
