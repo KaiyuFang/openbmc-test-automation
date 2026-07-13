@@ -42,9 +42,9 @@
 
 - [Robot Framework 安装说明](https://github.com/robotframework/robotframework/blob/master/INSTALL.rst)
 
-- 通过 pip 安装 OpenBMC 测试自动化所需的软件包及其依赖项
+- 请通过 pip 安装 OpenBMC 测试自动化所需的软件包及其依赖项
 
-若使用 Python 3.x，请使用对应的 pip3 命令安装。注意：旧版的Python 2.x 已不再维护
+若使用 Python 3.x，请使用对应的 pip3 命令安装。注意：旧版的 Python 2.x 已不再维护
 
 安装所需依赖：
 
@@ -64,13 +64,13 @@
 注意：若未在环境中完成上述设置，gui/ 目录下的 GUI 测试用例将无法运行
 [OpenBMC GUI 测试设置指南](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/gui_setup_reference.md)
 
-安装 tox:
+安装 tox ：
 
 ```
     $ pip install -U tox
 ```
 
-安装 expect (以 Ubuntu 为例):
+安装 expect (以 Ubuntu 为例)：
 
 ```
     $ sudo apt-get install expect
@@ -80,34 +80,33 @@
 
 下列文档包含 OpenBMC 测试代码开发与调试的详细信息
 
-- [MAINTAINERS](OWNERS): OpenBMC 测试代码维护者信息
-- [CONTRIBUTING.md](CONTRIBUTING.md): 编码规范
-- [代码检查工具](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/code_standards_check.md):
+- [CONTRIBUTING.md](CONTRIBUTING.md)： 编码规范
+- [代码检查工具](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/code_standards_check.md)：
   用于检查常见拼写错误、语法及标准规范检查
-- [Redfish 编码规范](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/redfish_coding_guidelines.md):
+- [Redfish 编码规范](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/redfish_coding_guidelines.md)：
   Redfish 编码规范参考
-- [REST-cheatsheet.md](https://github.com/openbmc/docs/blob/master/REST-cheatsheet.md):
+- [REST-cheatsheet.md](https://github.com/openbmc/docs/blob/master/REST-cheatsheet.md)：
   Legacy REST 测试中常用 curl 命令的快速参考
-- [REDFISH-cheatsheet.md](https://github.com/openbmc/docs/blob/master/REDFISH-cheatsheet.md):
+- [REDFISH-cheatsheet.md](https://github.com/openbmc/docs/blob/master/REDFISH-cheatsheet.md)：
   Redfish 测试中常用 curl 命令的快速参考
-- [README.md](https://github.com/openbmc/webui-vue/blob/master/README.md): Web
+- [README.md](https://github.com/openbmc/webui-vue/blob/master/README.md):：
   Web UI 设置参考
-- [基于 mTLS 的 Redfish 请求](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/redfish_request_via_mTLS.md):
+- [基于 mTLS 的 Redfish 请求](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/redfish_request_via_mTLS.md)：
   基于 mTLS 发起 Redfish 请求的参考文档
-- [公司 CLA 与个人 CLA](https://github.com/openbmc/docs/blob/master/CONTRIBUTING.md#submitting-changes-via-gerrit-server):
+- [公司 CLA 与个人 CLA](https://github.com/openbmc/docs/blob/master/CONTRIBUTING.md#submitting-changes-via-gerrit-server)：
   通过 Gerrit 服务器提交变更的相关说明
 
 ## OpenBMC 测试文档
 
-- [OpenBMC 测试架构](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/openbmc_test_architecture.md):
+- [OpenBMC 测试架构](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/openbmc_test_architecture.md)：
   OpenBMC 测试架构参考
-- [工具](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/openbmc_test_tools.md):
+- [工具](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/openbmc_test_tools.md)：
   辅助工具参考信息
-- [固件更新](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/code_update.md):
+- [固件更新](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/code_update.md)：
  当前支持的 BMC 与 PNOR 更新
-- [证书生成](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/certificate_generate.md):
+- [证书生成](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/certificate_generate.md)：
   创建及安装 CA 签名证书的步骤
-- [启动测试](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/boot_test.md):
+- [启动测试](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/boot_test.md)：
   OpenBMC启动测试
 
 ## 支持的系统架构
@@ -121,14 +120,14 @@ OpenBMC 测试框架已验证可运行于以下平台：
 
 用于验证环境准备是否已完成并可执行测试
 
--下载 openbmc-test-automation 仓库:
+-下载 openbmc-test-automation 仓库：
 
   ```
   $ git clone https://github.com/openbmc/openbmc-test-automation
   $ cd openbmc-test-automation
   ```
 
-- 运行基础环境验证测试:
+- 运行基础环境验证测试：
 
   ```
   $ robot -v OPENBMC_HOST:xx.xx.xx.xx templates/test_openbmc_setup.robot
@@ -138,40 +137,40 @@ OpenBMC 测试框架已验证可运行于以下平台：
 
 ## 测试目录结构
 
-openbmc-test-automation 根目录下包含多个子目录，分别存放测试套件、工具、模板等。这些子目录的分类如下:
+openbmc-test-automation 根目录下包含多个子目录，分别存放测试套件、工具、模板等。这些子目录的分类如下：
 
-`docs/`: 包含与 OpenBMC 相关的文档
+`docs/`： 包含与 OpenBMC 相关的文档
 
-`redfish/`: 包含 OpenBMC 功能验证的通用测试用例
+`redfish/`： 包含 OpenBMC 功能验证的通用测试用例
 
-`systest/`: 包含 HTX bootme 测试用例
+`systest/`： 包含 HTX bootme 测试用例
 
-`xcat/`: 包含 XCAT 自动化测试用例
+`xcat/`： 包含 XCAT 自动化测试用例
 
-`gui/test/`: 包含基于 AngularJS 的 Web 界面测试用例
+`gui/test/`： 包含基于 AngularJS 的 Web 界面测试用例
 
-`gui/gui_test/`: 包含基于 Vue.js 的 Web 用户界面测试用例
+`gui/gui_test/`： 包含基于 Vue.js 的 Web 用户界面测试用例
 
-`pldm/`: 包含平台管理子系统的测试用例（base、bios、fru、platform、OEM）
+`pldm/`： 包含平台管理子系统的测试用例（base、bios、fru、platform、OEM）
 
-`snmp/`: 包含 SNMP（简单网络管理协议）配置测试用例
+`snmp/`： 包含 SNMP（简单网络管理协议）配置测试用例
 
-`openpower/`: 包含基于 OpenPOWER 系统的测试用例
+`openpower/`： 包含基于 OpenPOWER 系统的测试用例
 
-`tools/`: 包含各类工具
+`tools/`： 包含各类工具
 
-`templates/`: 包含示例代码和环境搭建测试
+`templates/`： 包含示例代码和环境搭建测试
 
-`test_list/`: 包含用于跳过测试用例（如 skip_test、skip_test_extended 等）或进行分组（如 HW_CI、CT_basic_run 等）的参数文件
+`test_list/`： 包含用于跳过测试用例（如 skip_test、skip_test_extended 等）或进行分组（如 HW_CI、CT_basic_run 等）的参数文件
 
 ## Redfish 测试目录结构
 
-OpenBMC 正稳步向 DMTF Redfish 演进，这是一项开放的行业标准规范与Schema, 
+OpenBMC 正逐步采用 DMTF Redfish，这是一项开放的行业标准规范与Schema, 
 旨在满足最终用户对可扩展平台硬件实现简洁、现代化且安全管理的需求。
 
-`redfish/`: 包含 OpenBMC 上支持的 DMTF Redfish 相关功能测试用例
+`redfish/`： 包含 OpenBMC 上支持的 DMTF Redfish 相关功能测试用例
 
-`redfish/extended/`: 包含组合的 DMTF Redfish 相关功能测试用例。部分测试用例后续将被弃用
+`redfish/extended/`： 包含组合的 DMTF Redfish 相关功能测试用例。部分测试用例后续将被弃用
 
 注意：开发中的测试参数 -v REDFISH_SUPPORT_TRANS_STATE:1 可用于强制测试套件仅以 Redfish 模式执行。
 
@@ -182,21 +181,21 @@ OpenBMC 正稳步向 DMTF Redfish 演进，这是一项开放的行业标准规�
 
 **Robot 命令行**
 
-- 执行 redfish/ 和 ipmi/ 下的所有测试套件：:
+- 执行 redfish/ 和 ipmi/ 下的所有测试套件：
 
   ```
   $ robot -v OPENBMC_HOST:xx.xx.xx.xx  redfish  ipmi
   ```
 
-- 执行单个测试套件:
+- 执行单个测试套件：
 
   ```
   $ robot -v OPENBMC_HOST:xx.xx.xx.xx redfish/extended/test_basic_ci.robot
   ```
 
-- 初始化测试执行期间使用的变量:
+- 初始化测试执行期间使用的变量：
 
-  用户可通过环境变量预声明:
+  用户可通过环境变量预声明：
 
   ```
   $ export OPENBMC_HOST=<openbmc machine IP address/hostname>
@@ -205,9 +204,7 @@ OpenBMC 正稳步向 DMTF Redfish 演进，这是一项开放的行业标准规�
   $ export IPMI_COMMAND=<Dbus/External>
   ```
 
-  or
-
-  或者，用户也可在 CLI 命令中通过 robot 变量传入:
+  或者，用户也可在 CLI 命令中通过 robot 变量传入：
 
   ```
   -v OPENBMC_HOST:<openbmc machine IP address/hostname>
@@ -215,38 +212,38 @@ OpenBMC 正稳步向 DMTF Redfish 演进，这是一项开放的行业标准规�
   -v OPENBMC_PASSWORD:<openbmc password>
   ```
 
-- 在 qemu 中进行测试:
+- 在 qemu 中进行测试：
 
-  设置额外的环境变量:
+  设置额外的环境变量：
 
   ```
   $ export SSH_PORT=<ssh port number>
   $ export HTTPS_PORT=<https port number>
   ```
 
-  运行 QEMU CI 测试套件:
+  运行 QEMU CI 测试套件：
 
   ```
   $ OPENBMC_HOST=xx.xx.xx.xx SSH_PORT=<port number> HTTPS_PORT=<port number> robot -A test_lists/QEMU_CI  redfish/ ipmi/
   ```
 
-- 运行测试:
+- 运行测试：
 
-- 如何运行单个测试:
+- 如何运行单个测试：
 
   ```
   $ OPENBMC_HOST=xx.xx.xx.xx tox -e default -- --include Test_SSH_And_IPMI_Connections redfish/extended/test_basic_ci.robot
   ```
 
-- 如何运行 CI 和 CT 分组测试:
+- 如何运行 CI 和 CT 分组测试：
 
- 默认CI测试分组列表:
+ 默认CI测试分组列表：
 
   ```
   $ OPENBMC_HOST=xx.xx.xx.xx tox -e default -- --argumentfile test_lists/HW_CI  redfish/  ipmi/
   ```
 
-  默认 CI 冒烟测试分组列表:
+  默认 CI 冒烟测试分组列表：
 
   ```
   $ OPENBMC_HOST=xx.xx.xx.xx tox -e default -- --argumentfile test_lists/CT_basic_run  redfish/  ipmi/
@@ -264,21 +261,21 @@ OpenBMC 正稳步向 DMTF Redfish 演进，这是一项开放的行业标准规�
   $ robot -v OPENBMC_HOST:xx.xx.xx.xx -A test_lists/skip_test_witherspoon  redfish/ ipmi/
   ```
 
-- 通过 Robot CLI 接口运行 IPMI 测试:
+- 通过 Robot CLI 接口运行 IPMI 测试：
 
-  仅运行带外 IPMI 测试:
+  仅运行带外 IPMI 测试：
 
   ```
   $ robot -v IPMI_COMMAND:External -v OPENBMC_HOST:xx.xx.xx.xx --argumentfile test_lists/witherspoon/skip_inband_ipmi  ipmi/
   ```
 
-  仅运行带内 IPMI 测试:
+  仅运行带内 IPMI 测试：
 
   ```
   $ robot -v IPMI_COMMAND:Inband -v OPENBMC_HOST:xx.xx.xx.xx -v OS_HOST:xx.xx.xx.xx -v OS_USERNAME:xxxx -v OS_PASSWORD:xxxx --argumentfile test_lists/witherspoon/skip_oob_ipmi  ipmi/
   ```
 
-- 通过 Robot CLI 接口运行 GUI 测试:
+- 通过 Robot CLI 接口运行 GUI 测试：
 
   默认情况下，GUI 使用 Firefox 浏览器并以无头模式运行。使用 Chrome 浏览器并以 header 模式运行的示例如下：
 
@@ -286,7 +283,7 @@ OpenBMC 正稳步向 DMTF Redfish 演进，这是一项开放的行业标准规�
   $ robot -v OPENBMC_HOST:xx.xx.xx.xx -v GUI_BROWSER:gc -v GUI_MODE:header gui/test/
   ```
 
-  运行 GUI 默认 CI 测试组:
+  运行 GUI 默认 CI 测试组：
 
   ```
   $ robot -v OPENBMC_HOST:xx.xx.xx.xx --argumentfile test_lists/BMC_WEB_CI gui/test/
