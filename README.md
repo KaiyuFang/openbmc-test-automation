@@ -107,7 +107,7 @@
 - [证书生成](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/certificate_generate.md)：
   创建及安装 CA 签名证书的步骤
 - [启动测试](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/boot_test.md)：
-  OpenBMC启动测试
+  OpenBMC 启动测试
 
 ## 支持的系统架构
 
