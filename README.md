@@ -61,7 +61,7 @@
 克隆 openbmc-test-automation 仓库后即可找到该文件
 
 关于 Web UI（图形界面）测试环境搭建，请遵循《OpenBMC GUI 测试设置指南》中的操作说明
-注意：若未在环境中完成上述设置，gui/ 目录下的 GUI 测试用例将无法运行
+注意：若未在环境中完成上述设置，gui/ 目录下的 GUI 测试用例将无法运行。
 [OpenBMC GUI 测试设置指南](https://github.com/openbmc/openbmc-test-automation/blob/master/docs/gui_setup_reference.md)
 
 安装 tox ：
