@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation    Test Redfish session and its connection stability.
+Documentation    测试Redfish会话以及连接问稳定性
 
 Resource         ../../lib/bmc_redfish_utils.robot
 Resource         ../../lib/openbmc_ffdc.robot
@@ -16,8 +16,8 @@ Test Tags        Sessions_Connection
 ${DURATION}                 6h
 ${INTERVAL}                 30s
 ${REBOOT_INTERVAL}          30m
-# OpenBMC SSH uses systemd socket activation, so socket MaxConnections is the effective
-# limit. With default MaxConnections=64, 63 sessions can stay active and the 64th attempt fails.
+# OpenBMC 的 SSH 走的是 systemd 的 socket 激活机制，所以真正起作用的限制是 socket 里的 MaxConnections 参数
+# 默认情况下这个值设成 64，也就是说同时最多只能保持 63 个活跃会话，等第 64 个连接进来时就会直接失败。
 ${SSH_SESSION_LIMIT}        63
 
 *** Test Cases ***
@@ -79,7 +79,7 @@ Send Heartbeat
 Check Connection On Reboot
     [Documentation]  Send heartbeat on BMC reboot.
 
-    # Reboot BMC
+    # 重启 BMC
     Redfish OBMC Reboot (Off)
 
     # Verify session is still active and no issues on connection after reboot.
