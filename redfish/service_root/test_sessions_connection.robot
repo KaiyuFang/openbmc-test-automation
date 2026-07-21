@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation    测试Redfish会话以及连接问稳定性
+Documentation    测试Redfish会话以及连接稳定性
 
 Resource         ../../lib/bmc_redfish_utils.robot
 Resource         ../../lib/openbmc_ffdc.robot
@@ -9,7 +9,7 @@ Suite Teardown   Run Keywords  Set Redfish Delete Session Flag  ${1}  AND  Redfi
 Test Setup       Printn
 Test Teardown    FFDC On Test Case Fail
 
-Test Tags        Sessions_Connection
+Test Tags        Sessions_Connection  会话连接
 
 *** Variables ***
 
@@ -23,33 +23,33 @@ ${SSH_SESSION_LIMIT}        63
 *** Test Cases ***
 
 Create Session And Check Connection Stability
-    [Documentation]  Send heartbeat on session continuously and verify connection stability.
+    [Documentation]  验证会话在长时间心跳保活下的持续有效性
     [Tags]  Create_Session_And_Check_Connection_Stability
     [Setup]  Redfish.Logout
 
-    # Clear old session and start new session.
+    # 清除旧会话并创建新会话
     Redfish.Login
 
     Repeat Keyword  ${DURATION}  Send Heartbeat
 
 Create Session And Check Connection Stability On Reboot
-    [Documentation]  Create Session And Check Connection Stability On Reboot
+    [Documentation]  BMC软重启后，验证会话恢复及恢复后的连接稳定性
     [Tags]  Create_Session_And_Check_Connection_Stability_On_Reboot
     [Setup]  Redfish.Logout
 
-    # Clear old session and start new session.
+    # 清除旧会话并创建新会话
     Redfish.Login
 
     Repeat Keyword  ${DURATION}  Check Connection On Reboot
 
 Verify BMC Session Service Limits for SSH Connections
-    [Documentation]  Verify BMC Session Service limits for SSH connections.
+    [Documentation]   验证SSH并发连接数上限
     [Tags]    Verify_BMC_Session_Service_Limits_for_SSH_Connections
     [Setup]   SSHLibrary.Close All Connections
     [Teardown]  Run Keywords  SSHLibrary.Close All Connections  AND
     ...    Delete All Redfish Sessions
 
-    # Open SSH sessions up to limit and verify each login is successful.
+    # 在限制范围内创建SSH会话，验证每个都能成功登录
     FOR  ${i}  IN RANGE  ${SSH_SESSION_LIMIT}
         ${status}=  Run Keyword And Return Status
         ...  Open Connection And Log In  ${OPENBMC_USERNAME}  ${OPENBMC_PASSWORD}  host=${OPENBMC_HOST}
@@ -62,7 +62,7 @@ Verify BMC Session Service Limits for SSH Connections
     Log  SSH sessions created: ${ssh_count}
     Should Be Equal As Integers  ${ssh_count}  ${SSH_SESSION_LIMIT}
 
-    # Verify one additional SSH login beyond limit fails.
+    # 验证超出上限的一个SSH连接预期会失败
     ${extra_status}=  Run Keyword And Return Status
     ...  Open Connection And Log In  ${OPENBMC_USERNAME}  ${OPENBMC_PASSWORD}  host=${OPENBMC_HOST}
     Should Be Equal  ${extra_status}  ${False}
@@ -70,8 +70,7 @@ Verify BMC Session Service Limits for SSH Connections
 *** Keywords ***
 
 Send Heartbeat
-    [Documentation]  Send heartbeat to BMC.
-
+    [Documentation]  向BMC发送一次心跳
     Redfish.Get Attribute  ${REDFISH_NW_PROTOCOL_URI}  HostName
     Sleep  ${INTERVAL}
 
@@ -82,5 +81,5 @@ Check Connection On Reboot
     # 重启 BMC
     Redfish OBMC Reboot (Off)
 
-    # Verify session is still active and no issues on connection after reboot.
+    # 重启后持续发送心跳，验证会话仍有效
     Repeat Keyword  ${REBOOT_INTERVAL}  Send Heartbeat
