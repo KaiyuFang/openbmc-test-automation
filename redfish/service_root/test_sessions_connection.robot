@@ -9,8 +9,7 @@ Suite Teardown   Run Keywords  Set Redfish Delete Session Flag  ${1}  AND  Redfi
 Test Setup       Printn
 Test Teardown    FFDC On Test Case Fail
 
-Test Tags        Sessions_Connection  会话连接
-
+Test Tags        Sessions_Connection
 *** Variables ***
 
 ${DURATION}                 6h
@@ -62,7 +61,7 @@ Verify BMC Session Service Limits for SSH Connections
     Log  SSH sessions created: ${ssh_count}
     Should Be Equal As Integers  ${ssh_count}  ${SSH_SESSION_LIMIT}
 
-    # 验证超出上限的一个SSH连接预期会失败
+    # 验证第SSH_SESSION_LIMIT+1个SSH连接会因超出限制而失败
     ${extra_status}=  Run Keyword And Return Status
     ...  Open Connection And Log In  ${OPENBMC_USERNAME}  ${OPENBMC_PASSWORD}  host=${OPENBMC_HOST}
     Should Be Equal  ${extra_status}  ${False}
@@ -76,8 +75,7 @@ Send Heartbeat
 
 
 Check Connection On Reboot
-    [Documentation]  Send heartbeat on BMC reboot.
-
+    [Documentation]  BMC重启后发送心跳
     # 重启 BMC
     Redfish OBMC Reboot (Off)
 
