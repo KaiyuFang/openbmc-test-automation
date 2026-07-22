@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation    Test Redfish to verify responses for SessionService and Hypermedia.
+Documentation    针对 Redfish 会话服务及根服务入口的响应测试
 
 Resource         ../../lib/bmc_redfish_resource.robot
 Resource         ../../lib/openbmc_ffdc.robot
@@ -12,7 +12,7 @@ Test Tags        Service_Root
 *** Test Cases ***
 
 Redfish Login And Logout
-    [Documentation]  Login to BMCweb and then logout.
+    [Documentation]  登录 BMC Web 并退出登录
     [Tags]  Redfish_Login_And_Logout
 
     Redfish.Login
@@ -20,7 +20,7 @@ Redfish Login And Logout
 
 
 GET Redfish Hypermedia Without Login
-    [Documentation]  GET hypermedia URL without login.
+    [Documentation]  未登录时访问 Redfish 根服务入口
     [Tags]  GET_Redfish_Hypermedia_Without_Login
     [Setup]  Redfish.Logout
     [Template]  GET And Verify Redfish Response
@@ -31,7 +31,7 @@ GET Redfish Hypermedia Without Login
 
 
 GET Redfish SessionService Without Login
-    [Documentation]  Get /redfish/v1/SessionService without login
+    [Documentation]  未登录时访问 /redfish/v1/SessionService
     [Tags]  GET_Redfish_SessionService_Without_Login
     [Setup]  Redfish.Logout
 
@@ -40,12 +40,12 @@ GET Redfish SessionService Without Login
 
 
 GET Redfish Resources With Login
-    [Documentation]  Login to BMCweb and GET valid resource.
+    [Documentation]   登录 BMC Web 后，获取有效资源
     [Tags]  GET_Redfish_Resources_With_Login
     [Setup]  Redfish.Login
     [Template]  GET And Verify Redfish Response
 
-    # Expect status      Resource URL Path
+    # 预期状态码          资源 URL 路径
     ${HTTP_OK}           /redfish/v1/SessionService
     ${HTTP_OK}           /redfish/v1/AccountService
     ${HTTP_OK}           /redfish/v1/Systems/${SYSTEM_ID}
@@ -55,12 +55,12 @@ GET Redfish Resources With Login
 
 
 Redfish Login Using Invalid Token
-    [Documentation]  Login to BMCweb with invalid token.
+    [Documentation]  使用无效token登录 BMC Web
     [Tags]  Redfish_Login_Using_Invalid_Token
 
     Create Session  openbmc  ${AUTH_URI}
 
-    # Example: "X-Auth-Token: 3la1JUf1vY4yN2dNOwun"
+    # 示例: "X-Auth-Token: 3la1JUf1vY4yN2dNOwun"
     VAR  &{headers} =  Content-Type=application/json
     ...  X-Auth-Token=deadbeef
 
@@ -72,7 +72,7 @@ Redfish Login Using Invalid Token
 
 
 Verify Redfish Invalid URL Response Code
-    [Documentation]  Login to BMCweb and verify error response code.
+    [Documentation]  登录 BMC Web 后，验证无效 URL 的响应码
     [Tags]  Verify_Redfish_Invalid_URL_Response_Code
 
     Redfish.Login
@@ -82,7 +82,7 @@ Verify Redfish Invalid URL Response Code
 
 
 Delete Redfish Session Using Valid Login
-    [Documentation]  Delete a session using valid login.
+    [Documentation]  使用新登录获取的有效会话，删除已有会话
     [Tags]  Delete_Redfish_Session_Using_Valid_Login
 
     Redfish.Login
@@ -103,7 +103,7 @@ Delete Redfish Session Using Valid Login
 
 
 Redfish Login Via SessionService
-    [Documentation]  Login to BMC via redfish session service.
+    [Documentation]  通过 SessionService 登录 BMC
     [Tags]   Redfish_Login_Via_SessionService
 
     Create Session  openbmc  https://${OPENBMC_HOST}:${HTTPS_PORT}
@@ -120,7 +120,7 @@ Redfish Login Via SessionService
 
 
 Verify Redfish Unresponsive URL paths
-    [Documentation]  Verify that all URLs in /redfish/v1 respond.
+    [Documentation]  /redfish/v1 下 URL 路径预期都有响应
     [Tags]   Verify_Redfish_Unresponsive_URL_paths
 
     Redfish.Login
@@ -130,7 +130,7 @@ Verify Redfish Unresponsive URL paths
 
 
 Verify Service Root Unsupported Methods
-    [Documentation]  Verify Unsupported methods of service root
+    [Documentation]  验证服务根节点不支持的方法
     [Tags]  Verify_Service_Root_Unsupported_Methods
 
     Verify Supported And Unsupported Methods  uri=${REDFISH_BASE_URI}
@@ -139,7 +139,7 @@ Verify Service Root Unsupported Methods
 *** Keywords ***
 
 GET And Verify Redfish Response
-    [Documentation]  GET given resource and verify response.
+    [Documentation]   发起 GET 请求并校验响应
     [Arguments]  ${valid_status_codes}  ${resource_path}
 
     # Description of argument(s):
