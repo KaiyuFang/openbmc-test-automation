@@ -134,9 +134,11 @@ ${TFTP_SERVER}                  ${EMPTY}
 ${PNOR_TFTP_FILE_NAME}          ${EMPTY}
 ${BMC_TFTP_FILE_NAME}           ${EMPTY}
 ${IMAGE_FILE_PATH}              ${EMPTY}
+${HOST_IMAGE_FILE_PATH}         ${EMPTY}
 ${ALTERNATE_IMAGE_FILE_PATH}    ${EMPTY}
 ${PNOR_IMAGE_FILE_PATH}         ${EMPTY}
 ${BMC_IMAGE_FILE_PATH}          ${EMPTY}
+${HOST_IMAGE_FILE_PATH}         ${EMPTY}
 ${BAD_IMAGES_DIR_PATH}          ${EMPTY}
 ${SKIP_UPDATE_IF_ACTIVE}        false
 
