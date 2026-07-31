@@ -78,7 +78,7 @@ Verify Session Login And Logout For Newly Created User
     [Tags]  Verify_Session_Login_And_Logout_For_Newly_Created_User
     [Teardown]  Redfish.Login
 
-    # Logout already created redfish session.
+    # 注销已创建的redfish会话
     Redfish.Logout
     Redfish.Login  ${ADMIN}[0]  ${ADMIN}[1]
     ${systems}=  Redfish.Get Properties  /redfish/v1/Systems
@@ -89,7 +89,7 @@ Verify Session Login And Logout For Newly Created User
 
 
 Verify SessionService Defaults
-    [Documentation]  Verify SessionService default property values.
+    [Documentation]  验证会话服务的默认属性值
     [Tags]  Verify_SessionService_Defaults
 
     ${session_service}=  Redfish.Get Properties  /redfish/v1/SessionService
@@ -105,7 +105,7 @@ Verify SessionService Defaults
 
 
 Verify Sessions Defaults
-    [Documentation]  Verify Sessions default property values.
+    [Documentation]  验证会话集合的默认属性值
     [Tags]  Verify_Sessions_Defaults
 
     ${sessions}=  Redfish.Get Properties  ${REDFISH_SESSION_URI}
@@ -119,7 +119,7 @@ Verify Sessions Defaults
 
 
 Verify Current Session Defaults
-    [Documentation]  Verify Current session default property values.
+    [Documentation]  验证当前会话的默认属性值
     [Tags]  Verify_Current_Session_Defaults
 
     ${session_location}=  Redfish.Get Session Location
@@ -151,7 +151,7 @@ Verify Managers Defaults
 
 
 Verify Chassis Defaults
-    [Documentation]  Verify chassis defaults.
+    [Documentation]  验证机箱默认值
     [Tags]  Verify_Chassis_Defaults
 
     ${chassis}=  Redfish.Get Properties  ${REDFISH_CHASSIS_URI}
@@ -169,7 +169,7 @@ Verify Chassis Defaults
 
 
 Verify Systems Defaults
-    [Documentation]  Verify systems defaults.
+    [Documentation]  验证系统默认值
     [Tags]  Verify_Systems_Defaults
 
     ${systems}=  Redfish.Get Properties  ${REDFISH_SYSTEMS_URI}
@@ -184,7 +184,7 @@ Verify Systems Defaults
 
 
 Verify Session Persistency After BMC Reboot
-    [Documentation]  Verify session persistency after BMC reboot.
+    [Documentation]   验证 BMC 重启后会话是否仍然有效
     [Tags]  Verify_Session_Persistency_After_BMC_Reboot
 
     # Note the current session location.
