@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation    Test Redfish SessionService.
+Documentation    测试 Redfish 会话服务
 
 Resource         ../../lib/bmc_redfish_utils.robot
 Resource         ../../lib/openbmc_ffdc.robot
@@ -15,8 +15,8 @@ Test Tags        Sessions_Management
 
 @{ADMIN}       admin_user  TestPwd123
 @{OPERATOR}    operator_user  TestPwd123
-# User-driven input parameter to skip operator user.
-# -v SKIP_OPERATOR_USER:1  to skip from CLI.
+# 用户驱动的输入参数，用于跳过操作员用户。
+# -v SKIP_OPERATOR_USER:1 用于从命令行跳过。
 ${SKIP_OPERATOR_USER}    ${0}
 ${REDFISH_DELETE_SESSIONS}  ${0}
 
@@ -24,12 +24,11 @@ ${REDFISH_DELETE_SESSIONS}  ${0}
 *** Test Cases ***
 
 Create Session And Verify Response Code Using Different Credentials
-    [Documentation]  Create session and verify response code using different
-    ...              credentials.
+    [Documentation]  使用不同的凭据创建会话，并验证返回的状态码
     [Tags]  Create_Session_And_Verify_Response_Code_Using_Different_Credentials
     [Template]  Create Session And Verify Response Code
 
-    # username           password             valid_status_code
+    # 用户名              密码                 有效状态码
     ${OPENBMC_USERNAME}  ${OPENBMC_PASSWORD}  ${HTTP_CREATED}
     r00t                 ${OPENBMC_PASSWORD}  ${HTTP_UNAUTHORIZED}
     ${OPENBMC_USERNAME}  password             ${HTTP_UNAUTHORIZED}
@@ -38,25 +37,22 @@ Create Session And Verify Response Code Using Different Credentials
 
 
 Create Session And Verify Response Code Using Operator Credentials
-    [Documentation]  Create session and verify response code using operator
-    ...              credentials.
+    [Documentation]  使用操作员凭据创建会话，并验证状态码
     [Tags]  Create_Session_And_Verify_Response_Code_Using_Operator_Credentials
     [Template]  Create Session And Verify Response Code
 
-    # username           password             valid_status_code
+    # 用户名              密码                 有效状态码
     operator_user        TestPwd123           ${HTTP_CREATED}
 
 
 Set Session Timeout And Verify Response Code
-    [Documentation]  Set Session Timeout And Verify Response Code.
+    [Documentation]  设置会话超时并验证响应状态码
     [Tags]  Set_Session_Timeout_And_Verify_Response_Code
     [Template]  Set Session Timeout And Verify
     [Teardown]  Set Session Timeout And Verify  ${Default_Timeout_Value}  ${HTTP_OK}
 
-    # The minimum & maximum allowed values for session timeout are 30
-    # seconds and 86400 seconds respectively as per the session service
-    # schema mentioned at
-    # https://redfish.dmtf.org/schemas/v1/SessionService.v1_1_7.json
+    # 根据 SessionService 架构，会话超时的最小允许值为 30 秒，最大允许值为 86400 秒
+    # 详见 https://redfish.dmtf.org/schemas/v1/SessionService.v1_1_7.json
 
     # value             valid_status_code
     ${25}               ${HTTP_BAD_REQUEST}
@@ -67,20 +63,18 @@ Set Session Timeout And Verify Response Code
 
 
 Set Session Timeout And Verify Session After Timeout
-    [Documentation]  Set timeout for session service and verify session is
-    ...              deleted after timeout.
+    [Documentation]  设置会话服务的超时时间，并验证会话在超时后被删除
     [Tags]  Set_Session_Timeout_And_Verify_Session_After_Timeout
     [Template]  Set Session Timeout And Verify Session Deleted After Timeout
     [Teardown]  Set Session Timeout And Verify   ${Default_Timeout_Value}  ${HTTP_OK}
 
-    # timeout Value
+    # 超时值，单位：s
     ${30}
     ${300}
 
 
 Verify Session Login And Logout For Newly Created User
-    [Documentation]  Verify able to login and logout using the session created
-    ...              for new user.
+    [Documentation]  验证使用新用户创建的会话是否可以成功登录和退出。
     [Tags]  Verify_Session_Login_And_Logout_For_Newly_Created_User
     [Teardown]  Redfish.Login
 
