@@ -318,6 +318,8 @@ Suite Setup Execution
     Create Users With Different Roles  users=${USERS}  force=${True}
     Get Default Timeout Value
     Set Redfish Delete Session Flag  ${0}
+    ${chassis_id}=    Get Chassis ID    ${CHASSIS_ID}
+    Set Suite Variable    ${CHASSIS_ID}    ${chassis_id}
 
 
 Suite Teardown Execution
