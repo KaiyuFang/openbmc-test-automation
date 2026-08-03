@@ -14,8 +14,8 @@ Test Tags        Service_Root_Secuirity
 ${LOGIN_SESSION_COUNT}   ${50}
 
 &{header_requirements}  Strict-Transport-Security=max-age=31536000; includeSubdomains
-...                     X-Frame-Options=DENY
 ...                     Pragma=no-cache
+...                     Cache-Control=no-store, max-age=0             
 ...                     X-Content-Type-Options=nosniff
 ...                     OData-Version=4.0
 
