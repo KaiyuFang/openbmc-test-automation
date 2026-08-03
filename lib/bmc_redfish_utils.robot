@@ -510,3 +510,33 @@ Verify Supported And Unsupported Methods
     # Patch operation on unsupported method.
     Redfish.Patch  ${uri}
     ...  valid_status_codes=[${HTTP_METHOD_NOT_ALLOWED}]
+
+
+Get Chassis ID
+    [Documentation]    Attempt to get Chassis ID dynamically, fallback to static value on failure.
+    ...                Sends GET to /redfish/v1/Chassis, parses first member, returns its ID.
+    ...                If no Members or error, uses provided static_id. Fails if both unavailable.
+    ...                Arguments:
+    ...                - static_id: Static Chassis ID from resource.robot (e.g., ${CHASSIS_ID})
+    ...                Example:
+    ...                ${chassis_id}=    Get Chassis ID With Fallback    ${CHASSIS_ID}
+    [Arguments]    ${static_id}
+    ${dynamic_id}=    Set Variable    ${EMPTY}
+    ${resp}=    Run Keyword And Ignore Error    Redfish.Get    /redfish/v1/Chassis
+    IF    "${resp[0]}" == "PASS"
+        ${members}=    Set Variable    ${resp[1].dict["Members"]}
+        ${count}=    Get Length    ${members}
+        IF    ${count} > 0
+            ${first_uri}=    Set Variable    ${members[0]["@odata.id"]}
+            ${dynamic_id}=    Evaluate    "${first_uri}".split("/")[-1]
+            Log    Successfully obtained Chassis ID dynamically: ${dynamic_id}
+        END
+    END
+    IF    "${dynamic_id}" != "${EMPTY}"
+        RETURN    ${dynamic_id}
+    ELSE
+        Log    WARNING: Failed to get Chassis ID dynamically. Falling back to static: ${static_id}    level=WARN
+        Run Keyword If    "${static_id}" == "${EMPTY}"    Fail    No valid CHASSIS_ID found (Dynamic failed & Static is empty).
+        RETURN    ${static_id}
+    END
+
