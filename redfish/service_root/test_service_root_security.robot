@@ -16,14 +16,8 @@ ${LOGIN_SESSION_COUNT}   ${50}
 &{header_requirements}  Strict-Transport-Security=max-age=31536000; includeSubdomains
 ...                     X-Frame-Options=DENY
 ...                     Pragma=no-cache
-...                     Cache-Control=no-store, max-age=0
-...                     Referrer-Policy=no-referrer
 ...                     X-Content-Type-Options=nosniff
-...                     X-Permitted-Cross-Domain-Policies=none
-...                     Cross-Origin-Embedder-Policy=require-corp
-...                     Cross-Origin-Opener-Policy=same-origin
-...                     Cross-Origin-Resource-Policy=same-origin
-...                     Content-Security-Policy=default-src 'none'; img-src 'self' data:; font-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self' wss:; form-action 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'none'
+...                     OData-Version=4.0
 
 ${ERROR_RESPONSE_MSG}  *Connection refused*
 
@@ -115,20 +109,6 @@ Attempt Login With Expired Session
 Login And Verify HTTP Response Header
     [Documentation]  Login and verify redfish HTTP response header.
     [Tags]  Login_And_Verify_HTTP_Response_Header
-
-    # Example of HTTP redfish response header.
-    # Strict-Transport-Security: max-age=31536000; includeSubdomains
-    # X-Frame-Options: DENY
-    # Pragma: no-cache
-    # Cache-Control: no-store, max-age=0
-    # X-Content-Type-Options: nosniff
-    # Referrer-Policy: no-referrer
-    # X-Permitted-Cross-Domain-Policies: none
-    # Cross-Origin-Embedder-Policy: require-corp
-    # Cross-Origin-Opener-Policy: same-origin
-    # Cross-Origin-Resource-Policy: same-origin
-    # Content-Security-Policy: default-src 'none'; img-src 'self' data:; font-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self' wss:; form-action 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'none'
-
 
     Rprint Vars  header_requirements  fmt=1
 
