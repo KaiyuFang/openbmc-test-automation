@@ -146,7 +146,7 @@ Verify Managers Defaults
     Valid Value  managers['@odata.id']  ['/redfish/v1/Managers']
     Valid Value  managers['Members@odata.count']  [${managers_count}]
 
-    # Members can be one or more, hence checking in the list.
+    # 成员可能是一个或多个，因此需要以列表的方式进行检查
     Valid List  managers['Members']  required_values=[{'@odata.id': '/redfish/v1/Managers/${MANAGER_ID}'}]
 
 
@@ -163,7 +163,7 @@ Verify Chassis Defaults
     Valid Value  chassis['Members@odata.count']  [${chassis_count}]
     Valid Value  chassis['Members@odata.count']  [${chassis_count}]
 
-    # Members can be one or more, hence checking in the list.
+    # 成员可能是一个或多个，因此需要以列表的方式进行检查
     Valid List  chassis['Members']
     ...  required_values=[{'@odata.id': '/redfish/v1/Chassis/${CHASSIS_ID}'}]
 
@@ -179,7 +179,7 @@ Verify Systems Defaults
     Valid Value  systems['@odata.id']  ['/redfish/v1/Systems']
     Valid Value  systems['Members@odata.count']  [${systems_count}]
     Valid Value  systems['Members@odata.count']  [${systems_count}]
-    # Members can be one or more, hence checking in the list.
+    # 成员可能是一个或多个，因此需要以列表的方式进行检查
     Valid List  systems['Members']  required_values=[{'@odata.id': '/redfish/v1/Systems/${SYSTEM_ID}'}]
 
 
@@ -187,13 +187,13 @@ Verify Session Persistency After BMC Reboot
     [Documentation]   验证 BMC 重启后会话是否仍然有效
     [Tags]  Verify_Session_Persistency_After_BMC_Reboot
 
-    # Note the current session location.
+    # 记录当前会话的资源路径
     ${session_location}=  Redfish.Get Session Location
 
     Redfish OBMC Reboot (off)  stack_mode=normal
 
-    # Check for session persistency after BMC reboot.
-    # sessions here will have list of all sessions location.
+    # 检查 BMC 重启后会话的持久性
+    # 这里的 sessions 包含所有会话资源的路径列表
     ${sessions}=  Redfish.Get Attribute  ${REDFISH_SESSION_URI}  Members
     VAR  &{payload}  @odata.id=${session_location}
 
@@ -203,22 +203,22 @@ Verify Retrieving Deleted Session
     [Documentation]  Verify retrieving the deleted session returns an error.
     [Tags]  Verify_Retrieving_Deleted_Session
 
-    # Create a new user session.
+    # 创建一个新的用户会话
     ${resp}=  Redfish.Post  ${REDFISH_SESSION_URI}
     ...  body={'UserName':'${OPENBMC_USERNAME}', 'Password': '${OPENBMC_PASSWORD}'}
     ...  valid_status_codes=[${HTTP_CREATED}]
 
-    # Extract the session ID.
+    # 提取会话 ID
     VAR  ${session_id}  ${resp.dict['@odata.id'].split('/')[-1]}
-    # Get the session instance.
+    # 获取该会话实例
     Redfish.Get  ${REDFISH_SESSION_URI}/${session_id}
     ...  valid_status_codes=[${HTTP_OK}]
 
-    # Delete the created session.
+    # 删除已创建的会话
     Redfish.Delete  ${REDFISH_SESSION_URI}/${session_id}
     ...  valid_status_codes=[${HTTP_OK}, ${HTTP_NO_CONTENT}]
 
-    # Retrieving the deleted session should return an error.
+    # 尝试获取已删除的会话，预期返回错误 404 Not Found
     Redfish.Get  ${REDFISH_SESSION_URI}/${session_id}
     ...  valid_status_codes=[${HTTP_NOT_FOUND}]
 
