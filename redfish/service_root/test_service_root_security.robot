@@ -115,23 +115,6 @@ Login And Verify HTTP Response Header
     Redfish.Login
     ${resp}=  Redfish.Get  ${REDFISH_SESSION_URI}
 
-    # The getheaders() method returns the headers as a list of tuples:
-    # headers:
-
-    # [Strict-Transport-Security]:             max-age=31536000; includeSubdomains
-    # [X-Frame-Options]:                       DENY
-    # [Pragma]:                                no-cache
-    # [Cache-Control]:                         no-store, max-age=0
-    # [X-Content-Type-Options]:                nosniff
-    # [Referrer-Policy]:                       no-referrer
-    # [X-Permitted-Cross-Domain-Policies]:     none
-    # [Cross-Origin-Embedder-Policy]:          require-corp
-    # [Cross-Origin-Opener-Policy]:            same-origin
-    # [Cross-Origin-Resource-Policy]:          same-origin
-    # [Content-Security-Policy]:               default-src 'none'; img-src 'self' data:; font-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self' wss:; form-action 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'none'
-    # [Content-Type]:                          application/json
-    # [Content-Length]:                        394
-
     ${headers}=  Key Value List To Dict  ${resp.getheaders()}
     Rprint Vars  headers  fmt=1
 
