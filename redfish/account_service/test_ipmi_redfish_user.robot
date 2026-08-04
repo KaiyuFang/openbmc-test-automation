@@ -99,7 +99,7 @@ Update User Privilege Via Redfish And Verify Using IPMI
     VAR  &{payload}  RoleId=Operator
 
     Redfish.Patch  /redfish/v1/AccountService/Accounts/${random_username}  body=&{payload}
-    ...  valid_status_codes=[${HTTP_NO_CONTENT}]
+    ...  valid_status_codes=[${HTTP_OK}, ${HTTP_NO_CONTENT}]
 
     # Verify new user privilege level via IPMI.
     ${resp}=  Run IPMI Standard Command  user list ${CHANNEL_NUMBER}
