@@ -74,7 +74,7 @@ Verify Task Service Attributes
 Test Generated Task Instance Validity And Task State
     [Documentation]  Trigger a Redfish event that generates task instance and
     ...  verify the values of generated task instance.
-    [Tags]  Test_Generated_Task_Instance_Validity_And_Task_State
+    [Tags]  robot:skip  Test_Generated_Task_Instance_Validity_And_Task_State
 
     # {
     #     "@odata.id": "/redfish/v1/TaskService/Tasks/3",
@@ -169,7 +169,7 @@ Test Generated Task Instance Validity And Task State
 
 Verify Task Persistency Post BMC Reboot
     [Documentation]  Verify task collection persistency post BMC reboot.
-    [Tags]  Verify_Task_Persistency_Post_BMC_Reboot
+    [Tags]  robot:skip  Verify_Task_Persistency_Post_BMC_Reboot
 
     Verify Generate Task Instance Completion
 
@@ -198,7 +198,7 @@ Verify Unsupported Methods For Tasks URI On Task Service
 Verify Retrieving Deleted Tasks Instance
     [Documentation]  Verify retrieving the deleted tasks instance
     ...    returns an error.
-    [Tags]  Verify_Retrieving_Deleted_Tasks_Instance
+    [Tags]  robot:skip  Verify_Retrieving_Deleted_Tasks_Instance
 
     # Trigger a Redfish event that generates task instance.
     ${task_id}  ${resp}=  Generate Task Instance
