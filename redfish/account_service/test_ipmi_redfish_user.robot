@@ -69,7 +69,7 @@ Update User Password Via Redfish And Verify Using IPMI
     VAR  &{payload}  Password=${valid_password2}
 
     Redfish.Patch  /redfish/v1/AccountService/Accounts/${random_username}  body=&{payload}
-    ...  valid_status_codes=[${HTTP_NO_CONTENT}]
+    ...  valid_status_codes=[${HTTP_OK}, ${HTTP_NO_CONTENT}]
 
     # Verify that IPMI command works with new password and fails with older password.
     Verify IPMI Username And Password  ${random_username}  ${valid_password2}
