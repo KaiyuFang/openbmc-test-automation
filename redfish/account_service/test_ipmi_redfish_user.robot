@@ -377,7 +377,6 @@ Get All User Account Names
 Get User Count Of Not IPMI Account Type
     [Documentation]  Get user count of not IPMI account type.
 
-    ${user_count}=  Set Variable  ${0}
     ${username_list}=  Get All User Account Names
     FOR  ${user}  IN  @{username_list}
         ${resp}=  Redfish.Get  /redfish/v1/AccountService/Accounts/${user}
