@@ -22,7 +22,6 @@ ${readonly_level_priv}  2
 ${user_count}  0
 ${ipmi_max_num_users}   ${15}
 ${max_num_users}        ${15}
-${empty_name_pattern}   ^User Name\\s.*\\s:\\s$
 
 *** Test Cases ***
 
@@ -345,6 +344,7 @@ Test Teardown Execution
 Find Free User Id
     [Documentation]  Find a userid that is not being used.
 
+    ${empty_name_pattern}=  Set Variable  ^User Name\\s*:\\s*$
     FOR    ${jj}    IN RANGE    300
         # IPMI maximum users count (i.e. 15 users).
         ${random_userid}=  Evaluate  random.randint(1, ${ipmi_max_num_users})  modules=random
