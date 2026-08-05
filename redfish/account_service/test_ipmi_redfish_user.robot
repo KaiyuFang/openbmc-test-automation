@@ -393,6 +393,9 @@ Get User Count Of IPMI Account Type
     ${total}=  Redfish.Get Attribute  /redfish/v1/AccountService/Accounts  Members@odata.count
     ${not_ipmi}=  Get User Count Of Not IPMI Account Type
     ${ipmi_count}=  Evaluate  ${total} - ${not_ipmi}
+    RETURN  ${ipmi_count}
+    
+    
 
 
 
