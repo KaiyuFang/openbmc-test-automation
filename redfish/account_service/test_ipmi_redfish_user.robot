@@ -154,7 +154,7 @@ Create IPMI User And Verify Login Via Redfish
     Redfish.Logout
 
     # Verify user login using Redfish.
-    Redfish.Login  $random_username}  ${valid_password}
+    Redfish.Login  ${random_username}  ${valid_password}
     Redfish.Logout
 
     Redfish.Login
@@ -177,7 +177,7 @@ Update User Password Via IPMI And Verify Using Redfish
     Redfish.Logout
 
     # Verify that user login works with new password using Redfish.
-    Redfish.Login  $random_username}  ${valid_password2}
+    Redfish.Login  ${random_username}  ${valid_password2}
     Redfish.Logout
 
     Redfish.Login
