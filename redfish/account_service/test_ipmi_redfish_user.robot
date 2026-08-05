@@ -21,7 +21,7 @@ ${operator_level_priv}  3
 ${readonly_level_priv}  2
 ${user_count}  0
 ${ipmi_max_num_users}   ${15}
-${max_num_users}        ${15}
+${max_num_users}        ${30}
 
 *** Test Cases ***
 
@@ -230,15 +230,15 @@ Delete User Via IPMI And Verify Using Redfish
     ...  Redfish.Login  ${username}  ${valid_password}
 
 
-Verify Failure To Exceed Max Number Of Users
+Verify Failure To Exceed Max Number Of IPMI User Accounts
     [Documentation]  Verify failure attempting to exceed the max number of
-    ...  user accounts.
-    [Tags]  Verify_Failure_To_Exceed_Max_Number_Of_Users
+    ...  IPMI user accounts.
+    [Tags]  Verify_Failure_To_Exceed_Max_Number_Of_IPMI_User_Accounts
     [Teardown]  Run Keywords  Test Teardown Execution
     ...         AND  Delete Users Via Redfish  ${username_list}
 
-    # Get existing user count.
-    ${existing_user_count}=  Get User Count Of Not IPMI Account Type
+    # Get existing ipmi user count.
+    ${existing_ipmi_user_count}=  Get User Count Of IPMI Account Type
 
     VAR  &{payload}
     ...  Password=${valid_password}
@@ -247,8 +247,8 @@ Verify Failure To Exceed Max Number Of Users
 
     VAR  @{username_list}  @{EMPTY}
 
-    # Create users to reach maximum users count (i.e. 15 users).
-    FOR  ${INDEX}  IN RANGE  ${existing_user_count}  ${max_num_users}
+    # Create users to reach maximum ipmi users count (i.e. 15 users).
+    FOR  ${INDEX}  IN RANGE  ${existing_ipmi_user_count}  ${ipmi_max_num_users}
       ${random_username}=  Generate Random String  8  [LETTERS]
       Set To Dictionary  ${payload}  UserName  ${random_username}
       Redfish.Post  ${REDFISH_ACCOUNTS_URI}  body=&{payload}
@@ -386,3 +386,14 @@ Get User Count Of Not IPMI Account Type
         END
     END
     RETURN  ${user_count}
+
+
+Get User Count Of IPMI Account Type
+    [Documentation]  Get user count of IPMI account type.
+    ${total}=  Redfish.Get Attribute  /redfish/v1/AccountService/Accounts  Members@odata.count
+    ${not_ipmi}=  Get User Count Of Not IPMI Account Type
+    ${ipmi_count}=  Evaluate  ${total} - ${not_ipmi}
+
+
+
+
