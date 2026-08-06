@@ -10,7 +10,7 @@ Library          SSHLibrary
 
 Test Setup       Redfish.Login
 Test Teardown    Test Teardown Execution
-Suite Setup      Set Chassis ID
+Suite Setup      Redfish get Chassis ID
 
 Test Tags        User_Account
 
