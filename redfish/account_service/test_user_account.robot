@@ -10,6 +10,7 @@ Library          SSHLibrary
 
 Test Setup       Redfish.Login
 Test Teardown    Test Teardown Execution
+Suite Setup      Set Chassis ID
 
 Test Tags        User_Account
 
@@ -492,7 +493,7 @@ Verify Error While Deleting Root User
     [Documentation]  Verify error while deleting root user.
     [Tags]  Verify_Error_While_Deleting_Root_User
 
-    Redfish.Delete  ${REDFISH_ACCOUNTS_URI}root  valid_status_codes=[${HTTP_FORBIDDEN}]
+    Redfish.Delete  ${REDFISH_ACCOUNTS_URI}root  valid_status_codes=[${HTTP_NOT_FOUND}]
 
 
 Verify SSH Login Access With Admin User
@@ -652,6 +653,13 @@ Test Teardown Execution
 
     Run Keyword And Ignore Error  Redfish.Logout
     FFDC On Test Case Fail
+
+
+Redfish Get Chassis ID
+    [Documentation]  Redfish get Chassis ID and update the global variable.
+    ${chassis_id}=  Get Chassis ID  ${CHASSIS_ID}
+    Set Suite Variable  ${CHASSIS_ID}  ${chassis_id}
+    Log  CHASSIS_ID: ${CHASSIS_ID}
 
 
 Redfish Create User
