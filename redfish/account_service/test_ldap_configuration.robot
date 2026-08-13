@@ -358,24 +358,97 @@ Verify LDAP Type Update And LDAP Login
     Redfish Verify LDAP Login
 
 
-Verify LDAP Authorization With Null Privilege
-    [Documentation]  Verify the failure of LDAP authorization with empty
-    ...  privilege.
-    [Tags]  Verify_LDAP_Authorization_With_Null_Privilege
+Verify LDAP PATCH Rejects Empty LocalRole
+    [Documentation]  Verify that PATCH with empty LocalRole is rejected.
+    [Tags]  Verify_LDAP_PATCH_Rejects_Empty_LocalRole
     [Teardown]  Restore LDAP Privilege
 
-    Update LDAP Config And Verify Set Host Name  ${GROUP_NAME}  ${EMPTY}
-    ...  [${HTTP_FORBIDDEN}]
+    ${local_role_remote_group}=  Create Dictionary  LocalRole=${EMPTY}  RemoteGroup=${GROUP_NAME}
+    ${remote_role_mapping}=  Create List  ${local_role_remote_group}
+    ${ldap_data}=  Create Dictionary  RemoteRoleMapping=${remote_role_mapping}
+    ${payload}=  Create Dictionary  ${LDAP_TYPE}=${ldap_data}
+    Log To Console  PATCH payload: ${payload}
+
+    ${resp}=  Redfish.Patch  ${REDFISH_BASE_URI}AccountService  body=&{payload}
+    ...  valid_status_codes=[${HTTP_BAD_REQUEST}]
+    Should Contain  ${resp.text}  PropertyValueNotInList
+    Should Contain  ${resp.text}  RemoteRoleMapping/0/LocalRole
 
 
-Verify LDAP Authorization With Invalid Privilege
-    [Documentation]  Verify that LDAP user authorization with wrong privilege
-    ...  fails.
-    [Tags]  Verify_LDAP_Authorization_With_Invalid_Privilege
+Verify LDAP PATCH Rejects Invalid LocalRole
+    [Documentation]  Verify that PATCH with invalid LocalRole is rejected.
+    [Tags]  Verify_LDAP_PATCH_Rejects_Invalid_LocalRole
     [Teardown]  Restore LDAP Privilege
 
-    Update LDAP Config And Verify Set Host Name  ${GROUP_NAME}
-    ...  Invalid_Privilege  [${HTTP_FORBIDDEN}]
+    ${local_role_remote_group}=  Create Dictionary  LocalRole=Invalid_Privilege  RemoteGroup=${GROUP_NAME}
+    ${remote_role_mapping}=  Create List  ${local_role_remote_group}
+    ${ldap_data}=  Create Dictionary  RemoteRoleMapping=${remote_role_mapping}
+    ${payload}=  Create Dictionary  ${LDAP_TYPE}=${ldap_data}
+    Log To Console  PATCH payload: ${payload}
+
+    ${resp}=  Redfish.Patch  ${REDFISH_BASE_URI}AccountService  body=&{payload}
+    ...  valid_status_codes=[${HTTP_BAD_REQUEST}]
+    Should Contain  ${resp.text}  PropertyValueNotInList
+    Should Contain  ${resp.text}  RemoteRoleMapping/0/LocalRole
+
+
+Verify LDAP Authorization With Empty Role Mapping
+    [Documentation]  Verify that LDAP user with empty role mapping cannot perform privileged operations.
+    [Tags]  Verify_LDAP_Authorization_With_Empty_Role_Mapping
+    [Teardown]  Restore LDAP Privilege
+
+    # Step 1: 清空 RemoteRoleMapping (使用 Python 表达式，None 会序列化为json的 null)
+    ${clear_payload}=  Create Dictionary  ${LDAP_TYPE}=${{{"RemoteRoleMapping": [None]}}}
+    Log To Console  Clear mappings payload: ${clear_payload}
+    Redfish.Patch  ${REDFISH_BASE_URI}AccountService  body=${clear_payload}
+    ...  valid_status_codes=[${HTTP_OK}, ${HTTP_NO_CONTENT}]
+
+    Sleep  ${ladp_timeout}
+
+    ${login_status}=  Run Keyword And Return Status  Redfish.Login  ${LDAP_USER}  ${LDAP_USER_PASSWORD}
+
+    IF  ${login_status}
+        ${hostname}=  Redfish.Get Attribute  ${REDFISH_NW_PROTOCOL_URI}  HostName
+        Redfish.Patch  ${REDFISH_NW_ETH0_URI}  body={'HostName': '${hostname}'}
+        ...  valid_status_codes=[${HTTP_FORBIDDEN}]
+        Redfish.Logout
+    ELSE
+        Log  LDAP login failed as expected for unmapped user (likely 401).
+    END
+
+    Redfish.Login
+
+
+Verify LDAP Authorization With NonMatching Group
+    [Documentation]  Verify that LDAP user not in the configured group cannot perform privileged operations.
+    [Tags]  Verify_LDAP_Authorization_With_NonMatching_Group
+    [Teardown]  Restore LDAP Privilege
+
+    # Step 1: 配置有效角色 + 配置一个测试用户不在的组
+    ${local_role_remote_group}=  Create Dictionary
+    ...  LocalRole=Administrator
+    ...  RemoteGroup=non-matching-group
+    ${remote_role_mapping}=  Create List  ${local_role_remote_group}
+    ${ldap_data}=  Create Dictionary  RemoteRoleMapping=${remote_role_mapping}
+    ${payload}=  Create Dictionary  ${LDAP_TYPE}=${ldap_data}
+    Log To Console  PATCH payload (non-matching group): ${payload}
+    Redfish.Patch  ${REDFISH_BASE_URI}AccountService  body=&{payload}
+    ...  valid_status_codes=[${HTTP_OK}, ${HTTP_NO_CONTENT}]
+
+    Sleep  ${ldap_timeout}
+
+    ${login_status}=  Run Keyword And Return Status  Redfish.Login  ${LDAP_USER}  ${LDAP_USER_PASSWORD}
+
+    IF  ${login_status}
+        ${hostname}=  Redfish.Get Attribute  ${REDFISH_NW_PROTOCOL_URI}  HostName
+        Redfish.Patch  ${REDFISH_NW_ETH0_URI}  body={'HostName': '${hostname}'}
+        ...  valid_status_codes=[${HTTP_FORBIDDEN}]
+        Redfish.Logout
+    ELSE
+        Log  LDAP login failed as expected for non-matching group user (likely 401).
+    END
+
+    Redfish.Login
 
 
 Verify LDAP Login With Invalid Data
