@@ -10,7 +10,7 @@ Library      String
 Library      XvfbRobot
 Library      SeleniumLibrary
 Library      AngularJSLibrary
-Library      SSHLibrary  30 Seconds
+Library      SSHLibrary  timeout=30 seconds
 Library      supporting_libs.py
 Library      ../../lib/gen_print.py
 Library      ../../lib/gen_robot_print.py
@@ -18,7 +18,6 @@ Library      ../../lib/gen_valid.py
 Library      ../../lib/gen_robot_ssh.py
 Library      ../../lib/bmc_ssh_utils.py
 Resource     ../../lib/resource.robot
-Resource     ../../lib/rest_client.robot
 Resource     ../../lib/state_manager.robot
 Variables    ../data/resource_variables.py
 
