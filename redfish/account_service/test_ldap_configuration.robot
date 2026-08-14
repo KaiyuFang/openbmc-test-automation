@@ -403,7 +403,7 @@ Verify LDAP Authorization With Empty Role Mapping
     Redfish.Patch  ${REDFISH_BASE_URI}AccountService  body=${clear_payload}
     ...  valid_status_codes=[${HTTP_OK}, ${HTTP_NO_CONTENT}]
 
-    Sleep  ${ladp_timeout}
+    Sleep  ${ldap_timeout}
 
     ${login_status}=  Run Keyword And Return Status  Redfish.Login  ${LDAP_USER}  ${LDAP_USER_PASSWORD}
 
