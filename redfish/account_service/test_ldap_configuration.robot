@@ -459,8 +459,8 @@ Verify LDAP Login With Invalid Data
     ...  Redfish.Login  AND
     ...  Create LDAP Configuration
 
-    Create LDAP Configuration  ${LDAP_TYPE}  Invalid_LDAP_Server_URI
-    ...  Invalid_LDAP_BIND_DN  LDAP_BIND_DN_PASSWORD
+    Create LDAP Configuration  ${LDAP_TYPE}  ${ldap_unreachable_uri}
+    ...  Invalid_LDAP_BIND_DN  Invalid_LDAP_BIND_DN_PASSWORD
     ...  Invalid_LDAP_BASE_DN
     Sleep  ${ldap_timeout}
     Redfish Verify LDAP Login  ${False}
@@ -474,8 +474,8 @@ Verify LDAP Config Creation Without BASE DN
     ...  Redfish.Login  AND
     ...  Create LDAP Configuration
 
-    Create LDAP Configuration  ${LDAP_TYPE}  Invalid_LDAP_Server_URI
-    ...  Invalid_LDAP_BIND_DN  LDAP_BIND_DN_PASSWORD  ${EMPTY}
+    Create LDAP Configuration  ${LDAP_TYPE}  ${LDAP_SERVER_URI}
+    ...  ${LDAP_BIND_DN}  ${LDAP_BIND_DN_PASSWORD}  ${EMPTY}
     Sleep  ${ldap_timeout}
     Redfish Verify LDAP Login  ${False}
 
