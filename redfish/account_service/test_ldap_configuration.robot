@@ -474,10 +474,21 @@ Verify LDAP Config Creation Without BASE DN
     ...  Redfish.Login  AND
     ...  Create LDAP Configuration
 
-    Create LDAP Configuration  ${LDAP_TYPE}  ${LDAP_SERVER_URI}
-    ...  ${LDAP_BIND_DN}  ${LDAP_BIND_DN_PASSWORD}  ${EMPTY}
-    Sleep  ${ldap_timeout}
-    Redfish Verify LDAP Login  ${False}
+    ${body}=  Catenate  {'${LDAP_TYPE}':
+    ...  {'ServiceEnabled': ${True},
+    ...   'ServiceAddresses': ['${LDAP_SERVER_URI}'],
+    ...   'Authentication':
+    ...       {'AuthenticationType': 'UsernameAndPassword',
+    ...        'Username':'${LDAP_BIND_DN}',
+    ...        'Password': '${LDAP_BIND_DN_PASSWORD}'},
+    ...   'LDAPService':
+    ...       {'SearchSettings':
+    ...           {'BaseDistinguishedNames': []}}}}
+
+    ${resp}=  Redfish.Patch  ${REDFISH_BASE_URI}AccountService  body=${body}
+    ...  valid_status_codes=[${HTTP_BAD_REQUEST}]
+    Should Contain  ${resp.text}  PropertyValueNotInList
+    Should Contain  ${resp.text}  BaseDistinguishedNames
 
 
 Verify LDAP Authentication Without Password
