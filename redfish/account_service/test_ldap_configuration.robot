@@ -1154,6 +1154,15 @@ Suite Setup Execution
     Disable Other LDAP
     Create LDAP Configuration
     ${hostname}=  Redfish.Get Attribute  ${REDFISH_NW_PROTOCOL_URI}  HostName
+    Redfish Get Chassis ID
+    
+
+Redfish Get Chassis ID
+    [Documentation]  Redfish get Chassis ID and update the global variable.
+    ${chassis_id}=  Get Chassis ID  ${CHASSIS_ID}
+    Set Suite Variable  ${CHASSIS_ID}  ${chassis_id}
+    Log  CHASSIS_ID: ${CHASSIS_ID}
+
 
 LDAP Suite Teardown Execution
     [Documentation]  Restore ldap configuration, delete unused redfish session.
