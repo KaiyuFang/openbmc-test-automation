@@ -588,10 +588,10 @@ Update LDAP User Roles And Verify Host Poweroff Operation
     # ldap_type   group_privilege  group_name     valid_status_codes
 
     # Verify LDAP user with ReadOnly privilege not able to do host poweroff.
-    ${LDAP_TYPE}  ReadOnly         ${GROUP_NAME}  ${HTTP_FORBIDDEN}
+    ${LDAP_TYPE}  ReadOnly         ${GROUP_NAME}  [${HTTP_FORBIDDEN}]
 
     # Verify LDAP user with Operator privilege able to do host poweroff.
-    ${LDAP_TYPE}  Operator         ${GROUP_NAME}  ${HTTP_OK}
+    ${LDAP_TYPE}  Operator         ${GROUP_NAME}  [${HTTP_OK},${HTTP_NO_CONTENT}]
 
     # Verify LDAP user with Administrator privilege able to do host poweroff.
     ${LDAP_TYPE}  Administrator    ${GROUP_NAME}  [${HTTP_OK},${HTTP_NO_CONTENT}]
@@ -606,10 +606,10 @@ Update LDAP User Roles And Verify Host Poweron Operation
     # ldap_type   group_privilege  group_name     valid_status_codes
 
     # Verify LDAP user with ReadOnly privilege not able to do host poweron.
-    ${LDAP_TYPE}  ReadOnly         ${GROUP_NAME}  ${HTTP_FORBIDDEN}
+    ${LDAP_TYPE}  ReadOnly         ${GROUP_NAME}  [${HTTP_FORBIDDEN}]
 
     # Verify LDAP user with Operator privilege able to do host poweron.
-    ${LDAP_TYPE}  Operator         ${GROUP_NAME}  ${HTTP_OK}
+    ${LDAP_TYPE}  Operator         ${GROUP_NAME}  [${HTTP_OK},${HTTP_NO_CONTENT}]
 
     # Verify LDAP user with Administrator privilege able to do host poweron.
     ${LDAP_TYPE}  Administrator    ${GROUP_NAME}  [${HTTP_OK},${HTTP_NO_CONTENT}]
@@ -1277,7 +1277,8 @@ Update LDAP User Role And Host Poweroff
     Redfish.Post  ${REDFISH_POWER_URI}
     ...  body={'ResetType': 'ForceOff'}   valid_status_codes=${valid_status_code}
 
-    IF  ${valid_status_code} == ${HTTP_FORBIDDEN}  RETURN
+    ${is_forbidden}=  Evaluate  ${HTTP_FORBIDDEN} in ${valid_status_code}
+    IF  ${is_forbidden}  RETURN
     Wait Until Keyword Succeeds  1 min  10 sec  Verify Host Power State  Off
 
 Update LDAP User Role And Host Poweron
