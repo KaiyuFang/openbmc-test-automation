@@ -610,7 +610,11 @@ Delete IP Address
     Wait For Host To Ping  ${OPENBMC_HOST}  ${NETWORK_TIMEOUT}
 
     ${delete_status}=  Run Keyword And Return Status  Verify IP On BMC  ${ip}
-    IF  '${valid_status_codes}' == '[${HTTP_OK},${HTTP_ACCEPTED},${HTTP_NO_CONTENT}]'
+    ${delete_should_succeed}=  Run Keyword And Return Status
+    ...  Should Contain Any  ${valid_status_codes}
+    ...  ${HTTP_OK}  ${HTTP_ACCEPTED}  ${HTTP_NO_CONTENT}
+
+    IF  ${delete_should_succeed}
         Should Be True  '${delete_status}' == '${False}'
     ELSE
         Should Be True  '${delete_status}' == '${True}'
