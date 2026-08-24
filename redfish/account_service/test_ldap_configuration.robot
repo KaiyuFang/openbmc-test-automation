@@ -1254,7 +1254,7 @@ Verify Host Power Status
     IF  '${power_status}' == 'Off'
         Redfish Power On
     ELSE
-        Redfish Power Off
+        Smart Redfish Power Off
     END
 
 Update LDAP User Role And Host Poweroff
