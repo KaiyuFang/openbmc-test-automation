@@ -1306,7 +1306,8 @@ Update LDAP User Role And Host Poweron
     Redfish.Post  ${REDFISH_POWER_URI}
     ...  body={'ResetType': 'On'}   valid_status_codes=${valid_status_code}
 
-    IF  ${valid_status_code} == ${HTTP_FORBIDDEN}  RETURN
+    ${is_forbidden}=  Evaluate  ${HTTP_FORBIDDEN} in ${valid_status_code}
+    IF  ${is_forbidden}  RETURN
     Verify Host Is Up
 
 
