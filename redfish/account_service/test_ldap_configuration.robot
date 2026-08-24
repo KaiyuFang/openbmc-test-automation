@@ -622,6 +622,8 @@ Configure IP Address Via Different User Roles And Verify
 
     [Template]  Update LDAP User Role And Configure IP Address
     # Verify LDAP user with Administrator privilege is able to configure IP address.
+    # Administrator: Pass ${HTTP_OK} (not a list). It expands to 200,204, so both 200 and 204 accepted.
+    # Do not pass ${HTTP_NO_CONTENT} directly; it would not expand and only accept 204.
     ${LDAP_TYPE}  Administrator    ${GROUP_NAME}  ${HTTP_OK}
 
     # Verify LDAP user with ReadOnly privilege is forbidden to configure IP address.
@@ -638,8 +640,6 @@ Delete IP Address Via Different User Roles And Verify
 
     [Template]  Update LDAP User Role And Delete IP Address
     # Verify LDAP user with Administrator privilege is able to delete IP address.
-    # Administrator: Pass ${HTTP_OK} (not a list). It expands to 200,204, so both 200 and 204 accepted.
-    # Do not pass ${HTTP_NO_CONTENT} directly; it would not expand and only accept 204.
     ${LDAP_TYPE}  Administrator    ${GROUP_NAME}  [${HTTP_OK},${HTTP_NO_CONTENT}]
 
     # Verify LDAP user with ReadOnly privilege is forbidden to delete IP address.
