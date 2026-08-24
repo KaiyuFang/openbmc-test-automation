@@ -935,3 +935,28 @@ Smart Power Off
     ${cmd_buf}=  Catenate  REST Hard Power Off \ stack_mode=skip
     ...  \ \ quiet=${loc_quiet}
     Run Key U  ${cmd_buf}  quiet=${loc_quiet}
+
+
+Smart Redfish Power Off
+    [Documentation]  Do a smart redfish power off.
+    [Arguments]  ${quiet}=${QUIET}
+    # A 'Smart Redfish Power Off' consists of a 'Redfish Power Off' with recovery.
+    # Namely, if the 'Redfish Power Off' fails, a 'Redfish Hard Power Off' will
+    # be attempted.
+    # Description of argument(s):
+    # quiet                         If this parameter is set to ${1}, this
+    #                               keyword will print only essential
+    #                               information.  The default value is the
+    #                               global value of "${quiet}"
+    # OBMC Boot Test will restore global quiet to initial global value.
+    # Unfortunately, that restore affects our local quiet so we must
+    # preserve it.
+    ${loc_quiet}=  Set Variable  ${quiet}
+    ${cmd_buf}=  Catenate  Redfish Power Off \ stack_mode=skip
+    ...  \ \ quiet=${loc_quiet}
+    ${status}  ${ret_values}=  Run Key U  ${cmd_buf}  ignore=${1}
+    ...  quiet=${loc_quiet}
+    Run Keyword If  '${status}' == 'PASS'  Return From Keyword
+    ${cmd_buf}=  Catenate  Redfish Hard Power Off \ stack_mode=skip
+    ...  \ \ quiet=${loc_quiet}
+    Run Key U  ${cmd_buf}  quiet=${loc_quiet}
