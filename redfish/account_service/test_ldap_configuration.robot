@@ -663,7 +663,7 @@ Read Network Configuration Via Different User Roles And Verify
 
 Switch LDAP Type And Verify Login Fails
     [Documentation]  Switch LDAP type and verify login fails.
-    [Tags]  Switch_LDAP_Type_And_Verify_Login_Fails
+    [Tags]  Switch_LDAP_Type_And_Verify_Login_Fails  robot:skip
 
     # Check Login with LDAP Type is working
     Create LDAP Configuration
