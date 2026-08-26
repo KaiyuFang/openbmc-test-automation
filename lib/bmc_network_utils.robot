@@ -535,7 +535,8 @@ Add IP Address
       Append To List  ${patch_list}  ${empty_dict}
     END
 
-    ${valid_status_codes}=  Set Variable If  '${valid_status_codes}' == '${HTTP_OK}'
+    ${valid_status_codes}=  Set Variable If
+    ...   '${valid_status_codes}' == '${HTTP_OK}' or '${valid_status_codes}' == '${HTTP_NO_CONTENT}'
     ...   ${HTTP_OK},${HTTP_NO_CONTENT}   ${valid_status_codes}
 
     # We need not check for existence of IP on BMC while adding.
