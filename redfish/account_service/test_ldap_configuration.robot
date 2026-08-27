@@ -733,9 +733,8 @@ Verify Local User Management And Operations Continue During LDAP Unreachability
     ${resp}=  Redfish.Get  /redfish/v1/UpdateService/FirmwareInventory
     Should Be True  ${resp.dict["Members@odata.count"]} >= ${1}
 
-    # Verify ReadOnly user cannot perform write operations.
-    Redfish.Patch  ${REDFISH_ACCOUNTS_URI}${test_local_user}
-    ...  body={'RoleId': 'ReadOnly'}
+    # Verify ReadOnly user cannot perform privileged user management operations.
+    Redfish.Delete  ${REDFISH_ACCOUNTS_URI}${test_local_user}
     ...  valid_status_codes=[${HTTP_FORBIDDEN}]
 
     # Cleanup - logout and login with admin.
