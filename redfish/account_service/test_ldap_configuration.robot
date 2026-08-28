@@ -788,6 +788,8 @@ Create LDAP Config With Various Port Numbers
     invalid_port              ${HTTP_BAD_REQUEST}
     @#$%                      ${HTTP_BAD_REQUEST}
     -1                        ${HTTP_BAD_REQUEST}
+    389                       ${HTTP_OK}, ${HTTP_NO_CONTENT}
+    636                       ${HTTP_OK}, ${HTTP_NO_CONTENT}
     ${EMPTY}                  ${HTTP_OK}, ${HTTP_NO_CONTENT}
 
 Verify LDAP User Creates Local User And Local User Changes Privilege
@@ -1407,7 +1409,8 @@ Create LDAP Config With Port And Verify
     #                  ports, 200/204 for valid).
 
     # Build LDAP URI with the specified port.
-    VAR    ${base_uri}    '${LDAP_SERVER_URI}'.rstrip('/')    evaluate=True
+    ${url}=        Evaluate    urllib.parse.urlsplit($LDAP_SERVER_URI)    modules=urllib.parse
+    ${base_uri}=    Set Variable    ${url.scheme}://${url.hostname}
 
     # Handle empty/blank port - use URI without port specification.
     ${is_empty}=  Run Keyword And Return Status  Should Be Empty  ${port_value}
@@ -1416,6 +1419,8 @@ Create LDAP Config With Port And Verify
     ELSE
         VAR    ${ldap_uri_with_port}    ${base_uri}:${port_value}
     END
+    Log    ldap_server_url=${LDAP_SERVER_URI} 
+    Log    ldap_uri_with_port=${ldap_uri_with_port}  
 
     # Build the request body for LDAP configuration.
     ${body}=  Catenate  {'${LDAP_TYPE}':
