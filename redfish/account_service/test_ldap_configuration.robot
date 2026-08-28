@@ -1437,6 +1437,7 @@ Create LDAP Config With Port And Verify
     # Attempt to patch with the specified port.
     Redfish.Patch  ${REDFISH_BASE_URI}AccountService  body=${body}
     ...  valid_status_codes=[${expected_status}]
+    Sleep  15s
 
 
 LDAP User Creates Local User And Privilege Change By Local User
