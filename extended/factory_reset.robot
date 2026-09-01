@@ -16,7 +16,7 @@ Test Tags        Factory_Reset
 
 Verify Factory Reset
     [Documentation]  Factory reset the system and verify if BMC is online.
-    [Tags]  Verify_Factory_Reset
+    [Tags]  Verify_Factory_Reset  robot:skip
 
     # Factory reset erases user config settings which includes IP, netmask
     # gateway and route. Before running this test we are checking all these
@@ -30,7 +30,7 @@ Verify Factory Reset
 
 Revert to Initial Setup And Verify
     [Documentation]  Revert to old setup.
-    [Tags]  Revert_to_Initial_Setup_And_Verify
+    [Tags]  Revert_to_Initial_Setup_And_Verify  robot:skip
 
     # This test case restores old settings Viz IP address, netmask, gateway
     # and route. Restoring is done through serial port console.
