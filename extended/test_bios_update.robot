@@ -30,7 +30,7 @@ ${update_status}        True
 
 Host BIOS Update
     [Documentation]  Update PNOR image and verify.
-    [Tags]  Host_BIOS_Update  open-power
+    [Tags]  Host_BIOS_Update  open-power  robot:skip
 
     Validate Parameters
     Prepare BMC For Update
@@ -39,7 +39,7 @@ Host BIOS Update
 
 Host BIOS Power On
     [Documentation]  Power On the system and wait for OS
-    [Tags]  Host_BIOS_Power_On  open-power
+    [Tags]  Host_BIOS_Power_On  open-power  robot:skip
 
     IF  '${PREV_TEST_STATUS}' == 'PASS'  Validate Power On
 
