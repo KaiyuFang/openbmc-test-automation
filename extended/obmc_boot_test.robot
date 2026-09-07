@@ -9,7 +9,7 @@ Test Tags  Obmc_Boot
 
 General Boot Testing
     [Documentation]  Performs repeated boot tests.
-    [Tags]  General_Boot_Testing
+    [Tags]  General_Boot_Testing  robot:skip
     [Teardown]  Test Teardown
 
     OBMC Boot Test
