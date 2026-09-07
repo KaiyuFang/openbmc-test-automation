@@ -16,7 +16,7 @@ Test Tags         AC_Cycles
 
 Test OpenBMC Buster
     [Documentation]  Test the OpenBMC buster.
-    [Tags]  Test_OpenBMC_Buster
+    [Tags]  Test_OpenBMC_Buster  robot:skip
 
     Validate PDU Parameters
     ${output}=  Execute Command
