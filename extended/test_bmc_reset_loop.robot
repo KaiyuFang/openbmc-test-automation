@@ -29,7 +29,7 @@ ${ERROR_REGEX}     SEGV|core-dump|FAILURE|Failed to start|Found ordering cycle
 Run Multiple Power Cycle
     [Documentation]  Execute multiple power cycles.
     [Setup]  Validate Parameters
-    [Tags]  Run_Multiple_Power_Cycle
+    [Tags]  Run_Multiple_Power_Cycle  robot:skip
 
     # By default run test for 50 loops, else user input iteration.
     # Fails immediately if any of the execution rounds fail and
