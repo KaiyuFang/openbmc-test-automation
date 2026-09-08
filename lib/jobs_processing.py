@@ -59,7 +59,7 @@ def execute_process(num_process, keyword_name):
         task.join()
 
     # Return function return codes.
-    return return_dict
+    return dict(return_dict)
 
 
 def execute_keyword_args(keyword_name, args, return_dict):
