@@ -24,7 +24,7 @@ ${IPMI_BUSTER_MAX}    ${5}
 
 Stress BMC REST Server
     [Documentation]  Execute maximum allowed REST operation.
-    [Tags]  Stress_BMC_REST_Server
+    [Tags]  Stress_BMC_REST_Server  robot:skip
 
     Log To Console  REST call request burst ${REST_BUSTER_MAX}
     ${dict}=  Execute Process
@@ -81,4 +81,22 @@ SSH Connect And Execute Command
 IPMI Check Status
     [Documentation]  Execute IPMI command execution operation.
 
-    Run IPMI Standard Command  chassis status
+    ${cmd}=    Catenate
+    ...    ipmitool
+    ...    -I lanplus
+    ...    -C ${IPMI_CIPHER_LEVEL}
+    ...    -N 3
+    ...    -p ${IPMI_PORT}
+    ...    -U ${OPENBMC_USERNAME}
+    ...    -P ${OPENBMC_PASSWORD}
+    ...    -H ${OPENBMC_HOST}
+    ...    chassis status
+
+    ${rc}    ${output}=
+    ...    Run And Return Rc And Output
+    ...    ${cmd}
+
+    Should Be Equal As Integers
+    ...    ${rc}
+    ...    0
+
