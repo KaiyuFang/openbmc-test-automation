@@ -30,6 +30,7 @@ ${xpath_add_static_ipv6_addr_btn_eth1}   (//*[@data-test-id="add-static-ipv6"])[
 ${xpath_add_static_def_gateway_button}   //*[@data-test-id="add-static-default-gateway"]
 ${xpath_hostname}                        //*[@title="Edit hostname"]
 ${xpath_hostname_input}                  //*[@id="hostname"]
+${xpath_hostname_error}                  //*[@id="hostname"]/following-sibling::*[contains(@class,'invalid-feedback')]
 ${xpath_input_ip_address}                //input[@id='ipAddress' and not(ancestor::*[contains(@style,'display: none')])]
 ${xpath_input_gateway}                   //*[@id="gateway"]
 ${xpath_input_subnetmask}                //*[@id="subnetMask"]
@@ -264,6 +265,28 @@ Configure And Verify Multiple DNS Servers Via GUI
     Add DNS Servers And Verify  ${dns_server_3}
 
 
+Verify Error While Configuring String Value For DNS Server Via GUI
+    [Documentation]  Enter a string value (aa.bb.cc.dd) as DNS server IP via GUI and
+    ...  verify that an "Invalid format" error is displayed.
+    [Tags]  Verify_Error_While_Configuring_String_Value_For_DNS_Server_Via_GUI
+    [Setup]  DNS Test Setup Execution
+    [Teardown]  Run Keywords  Delete Static Name Servers  AND
+    ...  Configure Static Name Servers
+
+    Add DNS Servers And Verify  ${string_ip}  Invalid format
+
+
+Verify Error While Adding Empty DNS Server IP Address
+    [Documentation]  Submit an empty value as DNS server IP via GUI and verify
+    ...  that a "Field required" error is displayed.
+    [Tags]  Verify_Error_While_Adding_Empty_DNS_Server_IP_Address
+    [Setup]  DNS Test Setup Execution
+    [Teardown]  Run Keywords  Delete Static Name Servers  AND
+    ...  Configure Static Name Servers
+
+    Add DNS Servers And Verify  ${EMPTY}  Field required
+
+
 Configure Static IPv4 Netmask Via GUI And Verify
     [Documentation]  Login to GUI Network page, configure static IPv4 netmask and verify.
     [Tags]  Configure_Static_IPv4_Netmask_Via_GUI_And_Verify
@@ -323,6 +346,8 @@ Configure And Verify Invalid Static IP Address
     ${hex_ip}            ${test_subnet_mask}  ${default_gateway}    Invalid format
     ${spl_char_ip}       ${test_subnet_mask}  ${default_gateway}    Invalid format
     ${test_ipv4_addr}    ${test_subnet_mask}  ${incomplete_df_gw}   Invalid format
+    ${EMPTY}             ${test_subnet_mask}  ${default_gateway}    Field required
+    ${test_ipv4_addr}    ${EMPTY}             ${default_gateway}    Field required
 
 
 Configure And Verify Multiple Static IPv6 Address
@@ -1142,6 +1167,19 @@ Configure Staticv6 On Eth1 Enable DHCPv4 Verify Staticv6 Persists
     ...  msg=Static IPv6 address changed after enabling DHCPv4 on eth1.
 
 
+Verify Error While Adding Empty Host Name On BMC Page
+    [Documentation]  Verify that submitting an empty hostname on the Network settings page
+    ...  triggers a "Field required" validation error.
+    [Tags]  Verify_Error_While_Adding_Empty_Host_Name_On_BMC_Page
+    [Teardown]  Cancel And Verify Network Heading
+
+    Click Element  ${xpath_hostname}
+    Wait Until Page Contains  Edit hostname  timeout=1min
+    Clear Element Text  ${xpath_hostname_input}
+    Click Button  ${xpath_save_button}
+    Element Should Contain  ${xpath_hostname_error}  Field required
+
+
 *** Keywords ***
 
 Suite Setup Execution
@@ -1223,8 +1261,8 @@ Add Static IP Address And Verify
     IF  '${expected_status}' == 'Success'
         Wait Until Page Contains  ${ip_address}  timeout=40sec
         Wait Until Keyword Succeeds  5x  5s  Validate Network Config On BMC
-    ELSE IF  '${expected_status}' == 'Invalid format'
-        Page Should Contain  Invalid format
+    ELSE IF  '${expected_status}' in ['Invalid format', 'Field required']
+        Page Should Contain  ${expected_status}
         Click Button  ${xpath_cancel_button}
         Wait Until Page Does Not Contain Element  ${xpath_cancel_button}
     ELSE

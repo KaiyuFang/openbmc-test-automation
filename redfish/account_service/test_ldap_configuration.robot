@@ -22,7 +22,7 @@ ${hostname}                        ${EMPTY}
 ${test_ip}                         10.6.6.6
 ${test_mask}                       255.255.255.0
 ${test_local_user}                 test_local_user
-${local_readonly_user}             local_readonly_user
+${local_readonly_user}             local_read_user
 ${test_user_password}              TestPwd123
 ${local_readonly_user_password}    ReadOnly@123
 ${ldap_unreachable_uri}            ldap://192.0.2.1
@@ -36,6 +36,9 @@ ${new_password}                    NewPassword456
 # User privileges.
 ${privilege_admin}                 Administrator
 ${privilege_readonly}              ReadOnly
+# Certificate file paths for secure LDAP (ldaps://). Leave empty for non-secure LDAP.
+${LDAP_CA_FILE}                    ${EMPTY}
+${LDAP_CLIENT_CERT_FILE}           ${EMPTY}
 
 *** Test Cases ***
 
@@ -125,6 +128,22 @@ Verify LDAP Config Update With Incorrect LDAP URL
     ...  FFDC On Test Case Fail
 
     Config LDAP URL  ldap://1.2.3.4/  ${FALSE}
+
+
+Verify LDAP Config Update With Invalid URL Scheme
+    [Documentation]  Verify that configuring a secure LDAP connection with
+    ...  an invalid URL scheme "ldapt://" is rejected by the BMC.
+    [Tags]  Verify_LDAP_Config_Update_With_Invalid_URL_Scheme
+    [Teardown]  Run Keywords  Restore LDAP URL  AND
+    ...  FFDC On Test Case Fail
+
+    # Attempt to set an invalid "ldapt://" scheme.
+    ${host}=  Evaluate  '${LDAP_SERVER_URI}'.split('//')[-1]
+    VAR  ${invalid_uri}  ldapt://${host}
+    VAR  ${body}  {'${LDAP_TYPE}': {'ServiceAddresses': ['${invalid_uri}']}}
+    Redfish.Patch  ${REDFISH_BASE_URI}AccountService
+    ...  body=${body}  valid_status_codes=[${HTTP_BAD_REQUEST}]
+
 
 Verify LDAP Configuration Exist
     [Documentation]  Verify that LDAP configuration is available.
@@ -581,10 +600,10 @@ Delete IP Address Via Different User Roles And Verify
     ${LDAP_TYPE}  Administrator    ${GROUP_NAME}  [${HTTP_OK},${HTTP_NO_CONTENT}]
 
     # Verify LDAP user with ReadOnly privilege is forbidden to delete IP address.
-    ${LDAP_TYPE}  ReadOnly         ${GROUP_NAME}  ${HTTP_FORBIDDEN}
+    ${LDAP_TYPE}  ReadOnly         ${GROUP_NAME}  [${HTTP_FORBIDDEN}]
 
-    # Verify LDAP user with Operator privilege is able to delete IP address.
-    ${LDAP_TYPE}  Operator         ${GROUP_NAME}  ${HTTP_FORBIDDEN}
+    # Verify LDAP user with Operator privilege is forbidden to delete IP address.
+    ${LDAP_TYPE}  Operator         ${GROUP_NAME}  [${HTTP_FORBIDDEN}]
 
 
 Read Network Configuration Via Different User Roles And Verify
@@ -747,22 +766,21 @@ Verify LDAP User Creates Local User And Local User Changes Privilege
     ${privilege_admin}     Local_ReadOnly  ${privilege_readonly}  Forbidden
     ${privilege_readonly}  Local_ReadOnly  ${privilege_admin}     Forbidden
 
-Verify Local Admin And Service User Create Users And LDAP User Changes Privilege
-    [Documentation]  Verify local admin and service users create users with different privileges
+Verify Local Administrator Creates Users And LDAP User Changes Privilege
+    [Documentation]  Verify local administrator user creates users with different privileges
     ...  (Administrator and ReadOnly), then LDAP admin user changes the privilege
     ...  (ReadOnly to Administrator and Administrator to ReadOnly).
-    [Tags]  Verify_Local_Admin_And_Service_User_Create_Users_And_LDAP_User_Changes_Privilege
+    [Tags]  Verify_Local_Administrator_Creates_Users_And_LDAP_User_Changes_Privilege
     [Setup]  Update LDAP Configuration With LDAP User Role And Group  ${LDAP_TYPE}
     ...  Administrator  ${GROUP_NAME}
     [Template]  Creator User Creates Local User And LDAP User Changes Privilege
     [Teardown]  Run Keywords  Cleanup Local User And Restore Session  ${test_local_user}
     ...  AND  FFDC On Test Case Fail
 
-    # creator_user  creator_password        initial_privilege  new_privilege
-    admin           ${OPENBMC_PASSWORD}     ReadOnly           Administrator
-    admin           ${OPENBMC_PASSWORD}     Administrator      ReadOnly
-    service         ${OPENBMC_PASSWORD}     ReadOnly           Administrator
-    service         ${OPENBMC_PASSWORD}     Administrator      ReadOnly
+    # Creator must be a local user with Administrator role.
+    # creator_user          creator_password     initial_privilege  new_privilege
+    ${OPENBMC_USERNAME}     ${OPENBMC_PASSWORD}  ReadOnly           Administrator
+    ${OPENBMC_USERNAME}     ${OPENBMC_PASSWORD}  Administrator      ReadOnly
 
 Verify Privilege Change By Local Admin When LDAP Is Unreachable
     [Documentation]  Verify that a local admin can change a user's privilege even when LDAP is
@@ -1089,12 +1107,25 @@ Suite Setup Execution
     Valid Value  LDAP_BASE_DN
 
     Redfish.Login
+    # For secure LDAP (ldaps://), upload certificates so the BMC can verify
+    # the LDAP server's TLS certificate on login.
+    ${is_secure}=  Run Keyword And Return Status
+    ...  Should Start With  ${LDAP_SERVER_URI}  ldaps://
+    IF  ${is_secure}
+        Upload LDAP Certificates If Provided
+    END
     # Call 'Get LDAP Configuration' to verify that LDAP configuration exists.
     Get LDAP Configuration  ${LDAP_TYPE}
     Set Suite Variable  ${old_ldap_privilege}
     Disable Other LDAP
     Create LDAP Configuration
     ${hostname}=  Redfish.Get Attribute  ${REDFISH_NW_PROTOCOL_URI}  HostName
+    # Verify LDAP user can login after certificates and LDAP config are in place.
+    ${login_status}=  Run Keyword And Return Status
+    ...  Redfish.Login  ${LDAP_USER}  ${LDAP_USER_PASSWORD}
+    IF  not ${login_status}
+        Fatal Error  Cannot proceed: LDAP user login failed.
+    END
 
 LDAP Suite Teardown Execution
     [Documentation]  Restore ldap configuration, delete unused redfish session.
@@ -1264,7 +1295,7 @@ Update LDAP User Role And Configure IP Address
 
 Update LDAP User Role And Delete IP Address
     [Documentation]  Update LDAP user role and delete IP address.
-    [Arguments]  ${ldap_type}  ${group_privilege}  ${group_name}  ${valid_status_code}=[${HTTP_OK,${HTTP_NO_CONTENT}]
+    [Arguments]  ${ldap_type}  ${group_privilege}  ${group_name}  ${valid_status_code}=[${HTTP_OK},${HTTP_ACCEPTED},${HTTP_NO_CONTENT}]
     [Teardown]  Run Keywords  Redfish.Logout  AND  Redfish.Login  AND  Delete IP Address  ${test_ip}
 
     # Description of argument(s):
@@ -1450,7 +1481,7 @@ Creator User Creates Local User And LDAP User Changes Privilege
     [Teardown]  Redfish.Login
 
     # Description of argument(s):
-    # creator_user        Username of creator (admin or service).
+    # creator_user        Username of a local user with Administrator role.
     # creator_password    Password of creator user.
     # initial_privilege   Initial privilege of the created user (Administrator or ReadOnly).
     # new_privilege       New privilege to set by LDAP user (Administrator or ReadOnly).

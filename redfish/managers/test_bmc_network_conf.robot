@@ -761,6 +761,31 @@ Verify IPv4 And IPv6 Addresses Remain Intact After Adding DNS Server
     ...  msg=IPv6 address origins not intact after adding DNS server.  ignore_order=True
 
 
+Verify Static DNS Rejects Out Of Range IP Address
+    [Documentation]  Configure out-of-range IP address as a static DNS
+    ...  server on eth0 via Redfish and expect HTTP 400 Bad Request.
+    [Tags]  Verify_Static_DNS_Rejects_Out_Of_Range_IP_Address
+    [Setup]  DNS Test Setup Execution
+    [Teardown]  Run Keywords
+    ...  Configure Static Name Servers  AND  Test Teardown Execution
+
+    Configure Static Name Servers  ${out_of_range_ip}  ${HTTP_BAD_REQUEST}
+
+
+Verify IPv4 Link Local Absent When Static Or DHCP Configured
+    [Documentation]  Verify IPv4 link-local is not present when Static or DHCP IPv4 is configured.
+    [Tags]  Verify_IPv4_Link_Local_Absent_When_Static_Or_DHCP_Configured
+    [Setup]  Add IP Address  ${test_ipv4_addr}  ${test_subnet_mask}  ${test_gateway}
+    [Teardown]  Run Keywords
+    ...  Delete IP Address  ${test_ipv4_addr}  AND  Test Teardown Execution
+
+    ${ipv4_origin_list}  ${ignored}=
+    ...  Get Address Origin List And IPv4 or IPv6 Address  IPv4Addresses
+
+    Should Not Contain  ${ipv4_origin_list}  IPv4LinkLocal
+    ...  msg=IPv4 link-local must not be present when Static or DHCP is configured.
+
+
 *** Keywords ***
 
 Test Setup Execution
