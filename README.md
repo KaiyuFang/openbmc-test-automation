@@ -147,8 +147,6 @@ openbmc-test-automation 根目录下包含多个子目录，分别存放测试�
 
 `xcat/`： 包含 XCAT 自动化测试用例
 
-`gui/test/`： 包含基于 AngularJS 的 Web 界面测试用例
-
 `gui/gui_test/`： 包含基于 Vue.js 的 Web 用户界面测试用例
 
 `pldm/`： 包含平台管理子系统的测试用例（base、bios、fru、platform、OEM）
