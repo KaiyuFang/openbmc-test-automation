@@ -12,7 +12,6 @@ Browser specific packages:
 - geckodriver
 - Robotframework xvfb
 - xvfbwrapper
-- Robot Framework AngularJS Library
 
 ## Tested On Linux
 
