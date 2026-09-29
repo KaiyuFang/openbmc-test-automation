@@ -33,12 +33,14 @@ Test Tags       BMC_IPv6_Config
 # -v SERVER_USERNAME:root
 # -v SERVER_PASSWORD:*********
 
-${SERVER_USERNAME}        ${EMPTY}
-${SERVER_PASSWORD}        ${EMPTY}
-${SERVER_IPv6}            ${EMPTY}
-${test_ipv6_addr}         2001:db8:1:1:250:56ff:fe8a:668
-${test_ipv6_addr1}        2001:db8:1:1:250:56ff:fe8a:669
-${CA_CERTIFICATES_COUNT}  3
+${SERVER_USERNAME}                ${EMPTY}
+${SERVER_PASSWORD}                ${EMPTY}
+${SERVER_IPv6}                    ${EMPTY}
+${test_ipv6_addr}                 2001:db8:1:1:250:56ff:fe8a:668
+${test_ipv6_addr1}                2001:db8:1:1:250:56ff:fe8a:669
+${CA_CERTIFICATES_COUNT}          3
+${LDAP_CLIENT_CERT_FILE}          ${EMPTY}
+${LDAP_CLIENT_CERT_FILE_REPLACE}  ${EMPTY}
 
 *** Test Cases ***
 
@@ -285,15 +287,30 @@ Verify Eth1 DHCPv4 Functionality From IPv6 In Presence Of Static IPv6
     SLAAC           ${2}
 
 
-Configure SNMP IPv4 Via IPv6 And Verify
-    [Documentation]  Configure SNMP with IPv4 address via IPv6 and verify it works.
-    [Tags]  Configure_SNMP_IPv4_Via_IPv6_And_Verify
-    [Template]  Configure SNMP Manager Via IPv6 And Verify
+Configure SNMP IPv4 Manager Via IPv6 And Verify
+    [Documentation]  Configure an SNMP manager using an IPv4 address
+    ...    while accessing the BMC through static IPv6 or SLAAC, and verify that
+    ...    the SNMP trap is sent successfully.
+    [Tags]  Configure_SNMP_IPv4_Manager_Via_IPv6_And_Verify
+    [Template]  Configure And Verify SNMP Manager Via IPv6
 
-    # Address_type  channel_number
-    Static          ${1}
-    Static          ${2}
-    SLAAC           ${1}
+    # snmp_manager        ipv6_address_type  channel_number
+    ${SNMP_MGR1_IP}       Static             ${1}
+    ${SNMP_MGR1_IP}       Static             ${2}
+    ${SNMP_MGR1_IP}       SLAAC              ${1}
+
+
+Configure SNMP FQDN Manager Via IPv6 And Verify
+    [Documentation]  Configure an SNMP manager using FQDN
+    ...    while accessing the BMC through static IPv6 or SLAAC, and verify that
+    ...    the SNMP trap is sent successfully.
+    [Tags]  Configure_SNMP_FQDN_Manager_Via_IPv6_And_Verify
+    [Setup]  Valid Value  SNMP_FQDN
+    [Template]  Configure And Verify SNMP Manager Via IPv6
+
+    # snmp_manager        ipv6_address_type  channel_number
+    ${SNMP_FQDN}          Static             ${1}
+    ${SNMP_FQDN}          SLAAC              ${1}
 
 
 Configure Invalid Static IPv6 From IPv6 And Verify
@@ -377,6 +394,22 @@ Configure LDAP Via IPv6 And Verify Login
     Static          ${2}
 
 
+Configure LDAP Server FQDN Via IPv6 And Verify Login
+    [Documentation]  Configure LDAP server using an FQDN-based URI (e.g. ldap://ldap.example.com)
+    ...  via IPv6 for SLAAC and static addresses on eth0 and eth1, then verify LDAP user login.
+    ...  Prerequisite: The BMC must have a valid DNS server configured so the FQDN can be
+    ...  resolved. Pass LDAP_SERVER_FQDN_URI as a fully-qualified ldap:// or ldaps:// URI.
+    [Tags]  Configure_LDAP_Server_FQDN_Via_IPv6_And_Verify_Login
+    [Setup]  Valid Value  LDAP_SERVER_FQDN_URI
+    [Template]  Configure LDAP Using IPv6 Address And Verify Login
+
+    # address_type  channel_number  ldap_server_uri
+    SLAAC           ${1}            ${LDAP_SERVER_FQDN_URI}
+    Static          ${1}            ${LDAP_SERVER_FQDN_URI}
+    SLAAC           ${2}            ${LDAP_SERVER_FQDN_URI}
+    Static          ${2}            ${LDAP_SERVER_FQDN_URI}
+
+
 Configure Valid Static IPv6 Address Via IPv6 Address And Verify
     [Documentation]  Configure Static IPv6 address via IPv6 session on both interfaces
     ...  and verify normalization.
@@ -429,6 +462,30 @@ Replace CA Certificate Via IPv6 And Verify
     Static          ${2}
 
 
+Install LDAP Certificate Via IPv6 And Verify
+    [Documentation]  Install LDAP (client) certificate by logging from SLAAC/Static IPv6 on eth0/eth1 and verify.
+    [Tags]  Install_LDAP_Certificate_Via_IPv6_And_Verify
+    [Template]  Install LDAP Certificate From IPv6 Address
+
+    # Address_type  channel_number
+    SLAAC           ${1}
+    Static          ${1}
+    SLAAC           ${2}
+    Static          ${2}
+
+
+Replace LDAP Certificate Via IPv6 And Verify
+    [Documentation]  Replace LDAP (client) certificate by logging from SLAAC/Static IPv6 on eth0/eth1 and verify.
+    [Tags]  Replace_LDAP_Certificate_Via_IPv6_And_Verify
+    [Template]  Replace LDAP Certificate From IPv6 Address
+
+    # Address_type  channel_number
+    SLAAC           ${1}
+    Static          ${1}
+    SLAAC           ${2}
+    Static          ${2}
+
+
 Verify IPv4 And IPv6 Coexistence And Redfish Access On Eth0
     [Documentation]  Verify co-existence of various IPv4 and IPv6 address configurations on eth0
     ...              and verify Redfish is accessible on configured addresses.
@@ -449,6 +506,30 @@ Verify IPv4 And IPv6 Coexistence And Redfish Access On Eth0
     DHCPv4       SLAAC         ${EMPTY}
     DHCPv4       DHCPv6        ${EMPTY}
     DHCPv4       LinkLocal     ${EMPTY}
+
+
+Verify Eth0 Static And Eth1 DHCPv4 Then Add IPv6 On Both Interfaces
+    [Documentation]  Verify eth0 has static IPv4 and eth1 has DHCPv4 (enabling it if
+    ...  not already). Add a static IPv6 address on both eth0 and eth1, verify the
+    ...  IPv6 origins are present. Confirm IPv4 state is intact after IPv6 addition.
+    ...  Teardown restores eth1 to its original state.
+    [Tags]  Verify_Eth0_Static_And_Eth1_DHCPv4_Then_Add_IPv6_On_Both_Interfaces
+    [Setup]  Setup Eth0 Static Eth1 DHCPv4
+    [Teardown]  Teardown Eth0 Static Eth1 DHCPv4
+
+    # Add static IPv6 on each interface to exercise dual-stack config.
+    Configure IPv6 Address On BMC
+    ...  ${test_ipv6_addr}  ${test_prefix_length}  ${None}  ${1}
+    Configure IPv6 Address On BMC
+    ...  ${test_ipv6_addr1}  ${test_prefix_length}  ${None}  ${2}
+
+    # Verify that both interfaces report the newly added address as Static origin.
+    Get Address Origin List And Address For Type  Static  ${1}
+    Get Address Origin List And Address For Type  Static  ${2}
+
+    # Verify that adding IPv6 did not disturb the pre-existing IPv4 configuration.
+    Verify Static IPv4 Functionality  ${1}
+    Verify DHCPv4 Functionality On Eth1
 
 
 *** Keywords ***
@@ -842,38 +923,41 @@ Verify Eth1 DHCPv4 Functionality In Presence Of IPv6 Address
     Verify DHCPv4 Functionality On Eth1
 
 
-Configure SNMP Manager Via IPv6 And Verify
-    [Documentation]  Configure SNMP manager with IPv4 address on BMC via IPv6 and verify it works.
-    [Arguments]  ${ipv6_address_type}  ${channel_number}
+Configure And Verify SNMP Manager Via IPv6
+    [Documentation]  Configure SNMP manager on BMC via IPv6 using the given manager address
+    ...    (IPv4 address or FQDN) and verify that the SNMP trap is sent successfully.
+    [Arguments]  ${snmp_manager}  ${ipv6_address_type}  ${channel_number}
     [Teardown]  Run Keywords
-    ...  Delete SNMP Manager Via Redfish  ${SNMP_MGR_IP}  ${SNMP_DEFAULT_PORT}
+    ...  Delete SNMP Manager Via Redfish  ${snmp_manager}  ${SNMP_DEFAULT_PORT}
     ...  AND  Test Teardown Execution
 
-    # Description of argument(s):
-    # ipv6_address_type   Type of IPv6 address(slaac/static).
-    # channel_number      Ethernet channel number, 1(eth0) or 2(eth1).
+    # Description of argument(s):
+    # snmp_manager        SNMP manager address: IPv4 address or FQDN.
+    # ipv6_address_type   Type of IPv6 address to connect with (Static/SLAAC).
+    # channel_number      Ethernet channel number, 1(eth0) or 2(eth1).
 
-    # Get IPv6 address for the specified type and channel.
+    # Get the IPv6 address for the specified type and channel.
     @{ipv6_addressorigin_list}  ${ipv6_addr}=
     ...  Get Address Origin List And Address For Type  ${ipv6_address_type}  ${channel_number}
 
-    # Connect to BMC using IPv6 address and configure SNMP manager with IPv4 address via IPv6 session.
+    # Connect to BMC using the IPv6 address.
     Connect BMC Using IPv6 Address  ${ipv6_addr}
     RedfishIPv6.Login
 
-    Configure SNMP Manager Via Redfish  ${SNMP_MGR_IP}  ${SNMP_DEFAULT_PORT}  ${HTTP_CREATED}
+    # Configure SNMP manager on BMC via the IPv6 session.
+    Configure SNMP Manager Via Redfish  ${snmp_manager}  ${SNMP_DEFAULT_PORT}  ${HTTP_CREATED}
 
-    # Verify SNMP manager is configured on BMC.
-    Verify SNMP Manager Configured On BMC  ${SNMP_MGR_IP}  ${SNMP_DEFAULT_PORT}
+    # Verify SNMP manager is configured on BMC.
+    Verify SNMP Manager Configured On BMC  ${snmp_manager}  ${SNMP_DEFAULT_PORT}
 
-    # Verify SNMP functionality by generating an error and checking trap.
+    # Verify SNMP functionality by generating an error and checking the trap.
     Start SNMP Manager
     Generate Error On BMC And Verify Trap  ${CMD_INTERNAL_FAILURE}
-    ...  ${SNMP_TRAP_BMC_INTERNAL_FAILURE}
+    ...  ${SNMP_TRAP_BMC_INTERNAL_FAILURE}  ${snmp_manager}  ${SNMP_DEFAULT_PORT}
 
     # Stop SNMP manager process.
-    SSHLibrary.Switch Connection  snmp_server
-    SSHLibrary.Execute Command  sudo killall snmptrapd
+    SSHLibrary.Switch Connection  snmp_server
+    SSHLibrary.Execute Command  sudo killall snmptrapd
 
 
 Configure Invalid Static IPv6 From IPv6 Address And Verify
@@ -948,10 +1032,13 @@ Configure And Verify NTP Over IPv6
 Configure LDAP Using IPv6 Address And Verify Login
     [Documentation]  Configure LDAP using IPv6 address and verify LDAP user login.
     [Arguments]  ${ipv6_address_type}  ${channel_number}
+    ...          ${ldap_server_uri}=${LDAP_SERVER_URI}
 
     # Description of argument(s):
     # ipv6_address_type  Type of IPv6 address (SLAAC/Static).
     # channel_number     Ethernet channel number, 1(eth0) or 2(eth1).
+    # ldap_server_uri    LDAP server URI (e.g. ldap://XX.XX.XX.XX or ldap://hostname.example.com).
+    #                    Defaults to ${LDAP_SERVER_URI} (IP-based). Pass an FQDN URI for FQDN tests.
 
     # Get the IPv6 address for the specified type and channel.
     @{ipv6_addressorigin_list}  ${ipv6_addr}=
@@ -960,7 +1047,7 @@ Configure LDAP Using IPv6 Address And Verify Login
     RedfishIPv6.Login
 
     # Configure LDAP server using IPv6 connection.
-    Create LDAP Configuration  version=IPv6
+    Create LDAP Configuration  ldap_server_uri=${ldap_server_uri}  version=IPv6
 
     # Configure LDAP user role and group via IPv6.
     Update LDAP Configuration With LDAP User Role And Group  ${LDAP_TYPE}
@@ -1090,7 +1177,7 @@ Replace CA Certificate From IPv6 Address
 
     # Get existing CA certificate list and store initial count.
     ${cert_list}=  Redfish_Utils.Get Member List  /redfish/v1/Managers/${MANAGER_ID}/Truststore/Certificates
-    Should Not Be Empty  ${cert_list}  msg=No CA certificates found to replace
+    Should Not Be Empty  ${cert_list}  msg=No CA certificates found to replace.
     ${initial_cert_count}=  Get Length  ${cert_list}
 
     # Replace CA certificate via Redfish.
@@ -1113,6 +1200,113 @@ Cleanup All CA Certificates Via IPv6
 
     Delete All CA Certificate Via Redfish
     Install And Verify Certificate Via Redfish  CA  Valid Certificate  ok  ${FALSE}
+
+
+Install LDAP Certificate From IPv6 Address
+    [Documentation]  Install LDAP (client) certificate by logging from SLAAC/Static IPv6 address and verify.
+    [Arguments]  ${ipv6_address_type}  ${channel_number}
+    [Teardown]  RedfishIPv6.Logout
+
+    # Description of argument(s):
+    # ${ipv6_address_type}  Type of IPv6 address (SLAAC/Static).
+    # ${channel_number}     Ethernet channel number, 1(eth0) or 2(eth1).
+
+    # Fail early if certificate file path is not provided.
+    Should Not Be Empty  ${LDAP_CLIENT_CERT_FILE}
+    ...  msg=LDAP_CLIENT_CERT_FILE must be provided via -v LDAP_CLIENT_CERT_FILE:<path>.
+
+    # Get IPv6 address for the specified type and channel.
+    @{ipv6_addressorigin_list}  ${ipv6_addr}=
+    ...  Get Address Origin List And Address For Type  ${ipv6_address_type}  ${channel_number}
+
+    # Connect to BMC using IPv6 and establish Redfish session.
+    Connect BMC Using IPv6 Address  ${ipv6_addr}
+    RedfishIPv6.Login
+
+    # Only one LDAP client certificate is allowed - delete any existing before install.
+    Delete Certificate Via BMC CLI  Client  version=IPv6
+
+    # Read certificate file provided by the user.
+    ${bytes}=  OperatingSystem.Get Binary File  ${LDAP_CLIENT_CERT_FILE}
+    ${file_data}=  Decode Bytes To String  ${bytes}  UTF-8
+
+    # Install LDAP certificate via Redfish over IPv6 session.
+    ${cert_id}=  Install Certificate File On BMC  ${REDFISH_LDAP_CERTIFICATE_URI}  ok  version=IPv6  data=${file_data}
+    Log  Installed LDAP certificate id: ${cert_id}
+
+    Sleep  ${certificate_wait_time}s
+
+    # Verify the installed certificate content matches what was uploaded.
+    ${bmc_cert_content}=  redfish_utils.Get Attribute
+    ...  ${REDFISH_LDAP_CERTIFICATE_URI}/${cert_id}  CertificateString
+    Should Contain  ${file_data}  ${bmc_cert_content}
+    ...  msg=LDAP certificate content mismatch after install via ${ipv6_address_type} IPv6
+
+
+Replace LDAP Certificate From IPv6 Address
+    [Documentation]  Replace LDAP (client) certificate by logging from SLAAC/Static IPv6 address and verify.
+    ...  Installs LDAP_CLIENT_CERT_FILE first, then replaces it with LDAP_CLIENT_CERT_FILE_REPLACE.
+    ...  No delete is performed - uses CertificateService.ReplaceCertificate for in-place swap.
+    [Arguments]  ${ipv6_address_type}  ${channel_number}
+    [Teardown]  RedfishIPv6.Logout
+
+    # Description of argument(s):
+    # ${ipv6_address_type}  Type of IPv6 address (SLAAC/Static).
+    # ${channel_number}     Ethernet channel number, 1(eth0) or 2(eth1).
+
+    # Fail early if either certificate file path is not provided.
+    Should Not Be Empty  ${LDAP_CLIENT_CERT_FILE}
+    Should Not Be Empty  ${LDAP_CLIENT_CERT_FILE_REPLACE}
+
+    # Get IPv6 address for the specified type and channel.
+    @{ipv6_addressorigin_list}  ${ipv6_addr}=
+    ...  Get Address Origin List And Address For Type  ${ipv6_address_type}  ${channel_number}
+
+    # Connect to BMC using IPv6 and establish Redfish session.
+    Connect BMC Using IPv6 Address  ${ipv6_addr}
+    RedfishIPv6.Login
+
+    # Ensure clean state - only one LDAP certificate is allowed at a time.
+    Delete Certificate Via BMC CLI  Client  version=IPv6
+
+    # Read and install the first (original) LDAP certificate.
+    ${bytes}=  OperatingSystem.Get Binary File  ${LDAP_CLIENT_CERT_FILE}
+    ${file_data}=  Decode Bytes To String  ${bytes}  UTF-8
+    ${cert_id}=  Install Certificate File On BMC  ${REDFISH_LDAP_CERTIFICATE_URI}  ok  version=IPv6  data=${file_data}
+
+    Log  Installed original LDAP certificate id: ${cert_id}
+
+    Sleep  ${certificate_wait_time}s
+
+    # Read the replacement certificate file provided by the user.
+    ${replace_bytes}=  OperatingSystem.Get Binary File  ${LDAP_CLIENT_CERT_FILE_REPLACE}
+    ${replace_file_data}=  Decode Bytes To String  ${replace_bytes}  UTF-8
+
+    # Build ReplaceCertificate payload targeting the existing LDAP certificate URI.
+    # No delete is needed - ReplaceCertificate swaps the cert in-place.
+    VAR  ${certificate_uri}  ${REDFISH_LDAP_CERTIFICATE_URI}/${cert_id}
+    VAR  &{certificate_dict}  @odata.id=${certificate_uri}
+    VAR  &{payload}  CertificateString=${replace_file_data}
+    ...  CertificateType=PEM  CertificateUri=${certificate_dict}
+
+    # POST to ReplaceCertificate action over the IPv6 Redfish session.
+    RedfishIPv6.Post
+    ...  ${REDFISH_REPLACE_CERTIFICATE_URI}
+    ...  body=${payload}
+    ...  valid_status_codes=[${HTTP_OK}, ${HTTP_NO_CONTENT}]
+
+    Sleep  ${certificate_wait_time}s
+
+    # Verify the BMC now holds the replacement certificate content.
+    ${bmc_cert_content}=  redfish_utils.Get Attribute  ${certificate_uri}  CertificateString
+    Should Contain  ${replace_file_data}  ${bmc_cert_content}
+    ...  msg=BMC LDAP certificate was not replaced with new cert via ${ipv6_address_type} IPv6
+
+    # Verify count is still 1 - replace must not add a new certificate entry.
+    ${cert_list}=  Redfish_Utils.Get Member List  ${REDFISH_LDAP_CERTIFICATE_URI}
+    ${cert_count}=  Get Length  ${cert_list}
+    Should Be Equal As Integers  ${cert_count}  ${1}
+    ...  msg=Expected 1 LDAP certificate after replace via ${ipv6_address_type} IPv6
 
 
 Configure IPv4 IPv6 Combination And Verify Redfish Access
@@ -1327,3 +1521,54 @@ Restore Network Configuration And Cleanup
     END
 
 
+Setup Eth0 Static Eth1 DHCPv4
+    [Documentation]  Verify eth0 has static IPv4 (fail fast if not). Snapshot eth1's
+    ...  DHCPv4 flag and static IPv4 entries for teardown, then enable DHCPv4 on
+    ...  eth1 if it is not already on.
+
+    # Default True: if Get IPv4 DHCP Enabled Status throws, teardown
+    # skips restoration and avoids clobbering an already-DHCP interface.
+    VAR  ${eth1_dhcp_original}  ${True}  scope=TEST
+    VAR  @{eth1_static_ipv4_original}  scope=TEST
+
+    Verify Static IPv4 Functionality  ${1}
+
+    ${eth1_dhcp_original}=  Get IPv4 DHCP Enabled Status  ${2}
+    VAR  ${eth1_dhcp_original}  ${eth1_dhcp_original}  scope=TEST
+    @{eth1_static_ipv4_original}=  Get Network Configuration  ${2}
+    VAR  @{eth1_static_ipv4_original}  @{eth1_static_ipv4_original}  scope=TEST
+
+    IF  not ${eth1_dhcp_original}
+        ${active_channel_config}=  Get Active Channel Config
+        ${eth1_interface}=  Set Variable  ${active_channel_config['2']['name']}
+        Set DHCPEnabled To Enable Or Disable  True  ${eth1_interface}
+        Wait For Host To Ping  ${OPENBMC_HOST}  ${NETWORK_TIMEOUT}
+    END
+
+
+Teardown Eth0 Static Eth1 DHCPv4
+    [Documentation]  Remove the test IPv6 addresses, then restore eth1 to exactly
+    ...  the DHCPv4 state and static IPv4 addresses that existed before setup ran.
+    ...  Calls Test Teardown Execution (FFDC + logout) unconditionally last.
+
+    # Remove test IPv6 addresses; ignore errors if the test failed early.
+    Run Keyword And Ignore Error  Delete IPv6 Address  ${test_ipv6_addr}  ${1}
+    Run Keyword And Ignore Error  Delete IPv6 Address  ${test_ipv6_addr1}  ${2}
+
+    # Restore eth1 only when setup actually changed it.
+    IF  not ${eth1_dhcp_original}
+        ${active_channel_config}=  Get Active Channel Config
+        Set DHCPEnabled To Enable Or Disable  False  ${active_channel_config['2']['name']}
+        # Wait for the interface to settle before re-adding static IPs.
+        Wait For Host To Ping  ${OPENBMC_HOST}  ${NETWORK_TIMEOUT}
+        FOR  ${ip_entry}  IN  @{eth1_static_ipv4_original}
+            # Add IP Address reads ${CHANNEL_NUMBER} from test scope;
+            # set to 2 so each patch targets eth1.
+            VAR  ${CHANNEL_NUMBER}  ${2}  scope=TEST
+            Add IP Address  ${ip_entry['Address']}  ${ip_entry['SubnetMask']}
+            ...  ${ip_entry['Gateway']}
+        END
+        VAR  ${CHANNEL_NUMBER}  ${1}  scope=TEST
+    END
+
+    Test Teardown Execution

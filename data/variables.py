@@ -229,6 +229,10 @@ REDFISH_CA_CERTIFICATE = (
     "Managers/" + REDFISH_MANAGERS_ID + "/Truststore/Certificates"
 )
 REDFISH_CA_CERTIFICATE_URI = REDFISH_BASE_URI + REDFISH_CA_CERTIFICATE
+REDFISH_REPLACE_CERTIFICATE_URI = (
+    REDFISH_BASE_URI
+    + "CertificateService/Actions/CertificateService.ReplaceCertificate"
+)
 REDFISH_CHASSIS_ID = BuiltIn().get_variable_value(
     "${CHASSIS_ID}", default="chassis"
 )
@@ -251,6 +255,20 @@ REDFISH_SYSTEM_DUMP = (
 )
 REDFISH_CERTIFICATE_SERVICE_URI = REDFISH_BASE_URI + "CertificateService/"
 REDFISH_TELEMETRY_URI = REDFISH_BASE_URI + "TelemetryService/"
+
+# Host Interface and Manager Reset URI variables.
+HOST_INTERFACE_URI = (
+    REDFISH_BASE_URI
+    + "Managers/"
+    + REDFISH_MANAGERS_ID
+    + "/HostInterfaces/rhi"
+)
+MANAGER_RESET_URI = (
+    REDFISH_BASE_URI
+    + "Managers/"
+    + REDFISH_MANAGERS_ID
+    + "/Actions/Manager.Reset"
+)
 
 # Boot options and URI variables.
 POWER_ON = "On"
